@@ -9,6 +9,8 @@ type User struct {
 	Email    string `gorm:"type:varchar(150);not null"`
 	Rol      bool   `gorm:"type:boolean; not null"`
 	State    bool   `gorm:"type:boolean; not null"`
+
+	Bookings Bookings `gorm:"foreignKey:userId"`
 }
 
 type Users []User

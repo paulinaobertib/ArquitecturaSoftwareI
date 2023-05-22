@@ -9,6 +9,8 @@ type UserDto struct {
 	Email    string `json:"email"`
 	Rol      bool   `json:"rol"`
 	State    bool   `json:"state"`
+
+	BookingDto BookingsDto `json:"bookings,omitempty"`
 }
 
 type UsersDto []UserDto

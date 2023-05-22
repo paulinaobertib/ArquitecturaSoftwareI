@@ -68,8 +68,8 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 
 	var hotel model.Hotel
 
-	hotelDto.Availability =hotel.Availability 
-	hotel.Description= hotelDto.Description 
+	hotel.Availability = hotelDto.Availability 
+	hotel.Description = hotelDto.Description 
 	hotel.Email = hotelDto.Email 
 	hotel.Name = hotelDto.Name 
 	hotel.Telephone = hotelDto.Telephone 

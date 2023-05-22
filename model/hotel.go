@@ -8,6 +8,8 @@ type Hotel struct {
 	Rooms        int    `gorm:"type:integer;not null"`
 	Description  string `gorm:"type:varchar(500);not null"`
 	Availability int    `gorm:"type:integer;not null"`
+
+	Bookings Bookings `gorm:"foreignKey:hotelId"`
 }
 
 type Hotels []Hotel
