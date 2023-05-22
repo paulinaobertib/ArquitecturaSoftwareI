@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"proyecto/model"
+	"ArquitecturaSoftwareI/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
@@ -17,14 +17,14 @@ func GetAmenitieById(id int) model.Amenitie {
 	return amenitie
 }
 
-// func GetUsers() model.Users {
-// 	var users model.Users
-// 	Db.Preload("Address").Find(&users)
+func GetAmenities() model.Amenities {
+	var amenities model.Amenities
+	Db.Find(&amenities)
 
-// 	log.Debug("Users: ", users)
+	log.Debug("Amenities: ", amenities)
 
-// 	return users
-// }
+	return amenities
+}
 
 func InsertAmenitie(amenitie model.Amenitie) model.Amenitie {
 	result := Db.Create(&amenitie)

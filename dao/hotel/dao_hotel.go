@@ -1,14 +1,14 @@
 package hotel
 
 import (
-	"proyecto/model"
+	"ArquitecturaSoftwareI/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
 var Db *gorm.DB
 
-func GetHotel(id int) model.Hotel{
+func GetHotelById(id int) model.Hotel{
 	var hotel model.Hotel
 
 	Db.Where("id = ?", id).First(&hotel)

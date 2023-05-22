@@ -1,7 +1,7 @@
 package user
 
 import (
-	"proyecto/model"
+	"ArquitecturaSoftwareI/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )

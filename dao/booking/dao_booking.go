@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"proyecto/model"
+	"ArquitecturaSoftwareI/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
@@ -17,13 +17,13 @@ func GetBookingById(id int) model.Booking {
 	return booking
 }
 
-func GetBookings() model.Booking {
-	var booking model.Booking
-	Db.Preload("User").Preload("Hotel").Find(&booking)
+func GetBookings() model.Bookings {
+	var bookings model.Bookings
+	Db.Preload("User").Preload("Hotel").Find(&bookings)
 
-	log.Debug("Booking: ", booking)
+	log.Debug("Booking: ", bookings)
 
-	return booking
+	return bookings
 }
 
 func InsertBooking(booking model.Booking) model.Booking {
