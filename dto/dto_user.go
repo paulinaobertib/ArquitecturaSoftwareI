@@ -10,7 +10,7 @@ type UserDto struct {
 	Rol      bool   `json:"rol"`
 	State    bool   `json:"state"`
 
-	BookingDto BookingsDto `json:"bookings,omitempty"`
+	BookingsDto BookingsDto `json:"bookings,omitempty"`
 }
 
 type UsersDto []UserDto

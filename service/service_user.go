@@ -2,7 +2,6 @@ package service
 
 import (
 	userDAO "ArquitecturaSoftwareI/dao/user"
-	bookingDAO "ArquitecturaSoftwareI/dao/booking"
 
 	"ArquitecturaSoftwareI/dto"
 	"ArquitecturaSoftwareI/model"
@@ -57,7 +56,7 @@ func (u *userService) GetUserById(id int) (dto.UserDto, e.ApiError) {
 		dtoBooking.Price = booking.Price
 		dtoBooking.HotelId = booking.HotelId
 
-		userDto.BookingDto = append(userDto.BookingDto, dtoBooking)
+		userDto.BookingsDto = append(userDto.BookingsDto, dtoBooking)
 	}
 
 	return userDto, nil
