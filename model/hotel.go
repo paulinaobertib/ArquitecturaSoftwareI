@@ -10,6 +10,7 @@ type Hotel struct {
 	Availability int    `gorm:"type:integer;not null"`
 
 	Bookings Bookings `gorm:"foreignKey:hotelId"`
+	Amenities []*Amenitie `gorm:"many2many:hotels_amenities;"`
 }
 
 type Hotels []Hotel

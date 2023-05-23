@@ -11,7 +11,7 @@ import (
 type hotelService struct{}
 
 type hotelServiceInterface interface {
-	GetHotel(id int) (dto.HotelDto, e.ApiError)
+	GetHotelById(id int) (dto.HotelDto, e.ApiError)
 	GetHotels() (dto.HotelsDto, e.ApiError)
 	InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError)
 }
@@ -24,7 +24,7 @@ func init() {
 	HotelService = &hotelService{}
 }
 
-func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
+func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 
 	var hotel model.Hotel = hotelDAO.GetHotelById(id)
 	var hotelDto dto.HotelDto
@@ -49,6 +49,15 @@ func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
 		dtoBooking.HotelId = booking.HotelId
 
 		hotelDto.BookingsDto = append(hotelDto.BookingsDto, dtoBooking)
+	}
+
+	for _, amenitie := range hotel.Amenities {
+		var dtoAmenitie dto.AmenitieDto
+
+		dtoAmenitie.Name = amenitie.Name
+		dtoAmenitie.Description = amenitie.Description
+
+		hotelDto.AmenitiesDto = append(hotelDto.AmenitiesDto, &dtoAmenitie)
 	}
 
 	return hotelDto, nil

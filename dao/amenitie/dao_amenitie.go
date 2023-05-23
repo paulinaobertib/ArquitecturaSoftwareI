@@ -11,7 +11,7 @@ var Db *gorm.DB
 func GetAmenitieById(id int) model.Amenitie {
 	var amenitie model.Amenitie
 
-	Db.Where("id = ?", id).First(&amenitie)
+	Db.Where("id = ?", id).Preload("Hotel").First(&amenitie)
 	log.Debug("Aminitie: ", amenitie)
 
 	return amenitie
@@ -19,7 +19,7 @@ func GetAmenitieById(id int) model.Amenitie {
 
 func GetAmenities() model.Amenities {
 	var amenities model.Amenities
-	Db.Find(&amenities)
+	Db.Preload("Hotel").First(&amenities)
 
 	log.Debug("Amenities: ", amenities)
 

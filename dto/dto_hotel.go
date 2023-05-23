@@ -10,6 +10,8 @@ type HotelDto struct {
 	Availability int    `json:"availability"`
 
 	BookingsDto BookingsDto `json:"bookings,omitempty"`
+
+	AmenitiesDto []*AmenitieDto // LISTO LA RELACION EN EL DTO 
 }
 
 type HotelsDto []HotelDto

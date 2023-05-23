@@ -12,7 +12,7 @@ func GetUserById(id int) model.User {
 	var user model.User
 
 	//el first me devuelve el primer usuario que encuentra
-	Db.Where("id = ?", id).First(&user)
+	Db.Where("id = ?", id).Preload("Booking").First(&user)
 	//imprime la información
 	log.Debug("User: ", user)
 

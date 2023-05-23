@@ -19,7 +19,7 @@ func GetBookingById(id int) model.Booking {
 
 func GetBookings() model.Bookings {
 	var bookings model.Bookings
-	Db.Preload("User").Find(&bookings)
+	Db.Find(&bookings)
 
 	log.Debug("Bookings: ", bookings)
 
