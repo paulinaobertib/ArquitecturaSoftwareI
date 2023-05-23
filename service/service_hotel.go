@@ -40,6 +40,18 @@ func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
 	hotelDto.Telephone =hotel.Telephone 
 	hotelDto.Rooms=hotel.Rooms
 
+	for _, booking := range hotel.Bookings {
+		var dtoBooking dto.BookingDto
+
+		dtoBooking.DateFrom = booking.DateFrom
+		dtoBooking.DateTo = booking.DateTo
+		dtoBooking.Duration = booking.Duration
+		dtoBooking.Price = booking.Price
+		dtoBooking.HotelId = booking.HotelId
+
+		hotelDto.BookingsDto = append(hotelDto.BookingsDto, dtoBooking)
+	}
+
 	return hotelDto, nil
 }
 
