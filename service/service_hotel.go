@@ -33,7 +33,7 @@ func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
 		return hotelDto, e.NewBadRequestApiError("no se ha encontrado la reserva")
 	}
 	hotelDto.Name = hotel.Name
-	hotelDto.Availability = hotelDto.Availability
+	hotelDto.Availability = hotel.Availability
 	hotelDto.Description = hotel.Description
 	hotelDto.Email = hotel.Email
 	hotelDto.Telephone = hotel.Telephone

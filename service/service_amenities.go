@@ -11,7 +11,7 @@ import (
 type amenitieService struct{}
 
 type amenitieServiceInterface interface {
-	GetAmenitie(id int) (dto.AmenitieDto, e.ApiError)
+	GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError)
 	GetAmenities() (dto.AmenitiesDto, e.ApiError)
 	InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError)
 }
@@ -24,18 +24,18 @@ func init() {
 	AmenitieService = &amenitieService{}
 }
 
-func (h *amenitieService) GetAmenitie(id int) (dto.AmenitieDto, e.ApiError) {
+func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) {
 
 	var amenitie model.Amenitie = amenitieDAO.GetAmenitieById(id)
 	var amenitieDto dto.AmenitieDto
 
 	if amenitie.Id == 0 {
 		return amenitieDto, e.NewBadRequestApiError("no se ha encontrado la reserva")
-
-		amenitieDto.Description = amenitie.Description
-		amenitieDto.Id = amenitie.Id
-		amenitieDto.Name = amenitie.Name
 	}
+
+	amenitieDto.Id = amenitie.Id
+	amenitieDto.Name = amenitie.Name
+	amenitieDto.Description = amenitie.Description
 
 	return amenitieDto, nil
 }
