@@ -37,13 +37,12 @@ func (b *bookingService) GetBookingById(id int) (dto.BookingDto, e.ApiError) {
 	bookingDto.Duration = booking.Duration
 	bookingDto.Price = booking.Price
 
-
 	return bookingDto, nil
 }
 
 func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 
-	var bookings model.Booking = bookingDAO.GetBookings()
+	var bookings model.Bookings = bookingDAO.GetBookings()
 	var bookingsDto dto.BookingsDto
 
 	for _, booking := range bookings {
@@ -77,4 +76,3 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 
 	return bookingDto, nil
 }
-

@@ -14,4 +14,4 @@ type BookingDto struct {
 	HotelId  int       `json:"hotel_id"`
 }
 
-type BookingsDto []BookingsDto
+type BookingsDto []BookingDto
