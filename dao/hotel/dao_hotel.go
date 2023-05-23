@@ -1,14 +1,14 @@
 package hotel
 
 import (
-	"ArquitecturaSoftwareI/model"
+	"booking-api/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
 var Db *gorm.DB
 
-func GetHotelById(id int) model.Hotel{
+func GetHotelById(id int) model.Hotel {
 	var hotel model.Hotel
 
 	Db.Where("id = ?", id).Preload("Booking").First(&hotel)

@@ -1,11 +1,11 @@
 package service
 
 import (
-	bookingDAO "ArquitecturaSoftwareI/dao/booking"
-	
-	"ArquitecturaSoftwareI/dto"
-	"ArquitecturaSoftwareI/model"
-	e "ArquitecturaSoftwareI/utils/errors"
+	bookingDAO "booking-api/dao/booking"
+
+	"booking-api/dto"
+	"booking-api/model"
+	e "booking-api/utils/errors"
 )
 
 type bookingService struct{}

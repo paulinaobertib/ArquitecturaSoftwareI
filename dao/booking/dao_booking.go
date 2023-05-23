@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"ArquitecturaSoftwareI/model"
+	"booking-api/model"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )

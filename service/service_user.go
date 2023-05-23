@@ -1,16 +1,16 @@
 package service
 
 import (
-	userDAO "ArquitecturaSoftwareI/dao/user"
+	userDAO "booking-api/dao/user"
 
-	"ArquitecturaSoftwareI/dto"
-	"ArquitecturaSoftwareI/model"
-	e "ArquitecturaSoftwareI/utils/errors"
+	"booking-api/dto"
+	"booking-api/model"
+	e "booking-api/utils/errors"
 )
 
 type userService struct{}
 
-//interface del usuario
+// interface del usuario
 type userServiceInterface interface {
 	GetUserById(id int) (dto.UserDto, e.ApiError)
 	GetUserByUsername(username string) (dto.UserDto, e.ApiError)
@@ -18,7 +18,7 @@ type userServiceInterface interface {
 	InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError)
 }
 
-//inicializo una variable de service para poder usar sus metodos
+// inicializo una variable de service para poder usar sus metodos
 var (
 	UserService userServiceInterface
 )
@@ -91,9 +91,9 @@ func (u *userService) GetUsers() (dto.UsersDto, e.ApiError) {
 	var usersDto dto.UsersDto
 
 	/*
-	El código que proporcionas es un bucle for que recorre una lista de usuarios (users) y crea un objeto UserDto correspondiente para cada usuario.
-	En cada iteración del bucle, se crea una nueva variable userDto del tipo dto.UserDto. Luego, se asignan los valores de cada campo del objeto user al objeto userDto correspondiente.
-	Finalmente, el objeto userDto se agrega a la lista usersDto utilizando la función append().
+		El código que proporcionas es un bucle for que recorre una lista de usuarios (users) y crea un objeto UserDto correspondiente para cada usuario.
+		En cada iteración del bucle, se crea una nueva variable userDto del tipo dto.UserDto. Luego, se asignan los valores de cada campo del objeto user al objeto userDto correspondiente.
+		Finalmente, el objeto userDto se agrega a la lista usersDto utilizando la función append().
 	*/
 	for _, user := range users {
 		var userDto dto.UserDto

@@ -1,11 +1,11 @@
 package service
 
 import (
-	hotelDAO "ArquitecturaSoftwareI/dao/hotel"
-	
-	"ArquitecturaSoftwareI/dto"
-	"ArquitecturaSoftwareI/model"
-	e "ArquitecturaSoftwareI/utils/errors"
+	hotelDAO "booking-api/dao/hotel"
+
+	"booking-api/dto"
+	"booking-api/model"
+	e "booking-api/utils/errors"
 )
 
 type hotelService struct{}
@@ -24,7 +24,6 @@ func init() {
 	HotelService = &hotelService{}
 }
 
-
 func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
 
 	var hotel model.Hotel = hotelDAO.GetHotelById(id)
@@ -34,11 +33,11 @@ func (h *hotelService) GetHotel(id int) (dto.HotelDto, e.ApiError) {
 		return hotelDto, e.NewBadRequestApiError("no se ha encontrado la reserva")
 	}
 	hotelDto.Name = hotel.Name
-	hotelDto.Availability =hotelDto.Availability
-	hotelDto.Description =hotel.Description
-	hotelDto.Email =hotel.Email
-	hotelDto.Telephone =hotel.Telephone 
-	hotelDto.Rooms=hotel.Rooms
+	hotelDto.Availability = hotelDto.Availability
+	hotelDto.Description = hotel.Description
+	hotelDto.Email = hotel.Email
+	hotelDto.Telephone = hotel.Telephone
+	hotelDto.Rooms = hotel.Rooms
 
 	for _, booking := range hotel.Bookings {
 		var dtoBooking dto.BookingDto
@@ -80,13 +79,13 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 
 	var hotel model.Hotel
 
-	hotel.Availability = hotelDto.Availability 
-	hotel.Description = hotelDto.Description 
-	hotel.Email = hotelDto.Email 
-	hotel.Name = hotelDto.Name 
-	hotel.Telephone = hotelDto.Telephone 
-	hotel.Rooms = hotelDto.Rooms 
-	
+	hotel.Availability = hotelDto.Availability
+	hotel.Description = hotelDto.Description
+	hotel.Email = hotelDto.Email
+	hotel.Name = hotelDto.Name
+	hotel.Telephone = hotelDto.Telephone
+	hotel.Rooms = hotelDto.Rooms
+
 	hotel = hotelDAO.InsertHotel(hotel)
 
 	hotelDto.Id = hotel.Id

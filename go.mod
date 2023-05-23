@@ -1,4 +1,4 @@
-module ArquitecturaSoftwareI
+module booking-api
 
 go 1.20
 
