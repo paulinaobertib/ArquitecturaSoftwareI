@@ -2,6 +2,12 @@ package main
 
 import _ "booking-api/service"
 
-func main() {
+import (
+	"booking-api/app"
+	"booking-api/db"
+)
 
+func main() {
+	db.StartDbEngine()
+	app.StartRoute()
 }
