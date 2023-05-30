@@ -7,6 +7,8 @@ import AuthContextProvider from "./Providers/AuthContextProvider";
 
 function App() {
   return (
+    <>
+    </>
     // <>
     //   {user ? (
     //     <>
@@ -17,12 +19,12 @@ function App() {
     //     <Login user={user} setUser={setUser} />
     //   )}
     // </>
-    <AuthContextProvider>
+    /*<AuthContextProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/auth">
             <Route path="/auth/login" element={<Login />} />
-            {/* <Route path="/auth/register" element={<Register />} /> */}
+            {/* <Route path="/auth/register" element={<Register />} /> }
           </Route>
           {navigation.map(({ id, path, Element }) => (
             <Route
@@ -35,10 +37,10 @@ function App() {
               }
             />
           ))}
-          {/* <Route path="/" element={<Navigate to="/auth/login" />} /> */}
+          { <Route path="/" element={<Navigate to="/auth/login" />} /> }
         </Routes>
       </BrowserRouter>
-    </AuthContextProvider>
+    </AuthContextProvider>*/
   );
 }
 
