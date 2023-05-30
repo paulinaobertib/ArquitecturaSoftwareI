@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import PropTypes from "prop-types";
 import { BASE_URL } from "../configs";
 
 export const AuthContext = createContext();
@@ -26,6 +27,10 @@ const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={propiedades}>{children}</AuthContext.Provider>
   );
+};
+
+AuthContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default AuthContextProvider;
