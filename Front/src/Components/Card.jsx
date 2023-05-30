@@ -1,20 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./../Home/home.css";
 
-const Card = ({ name, image, id }) => {
+const Card = ({ name, id }) => {
 
   const navigate =  useNavigate();
   
   const selectHotel = () => {
-    navigate(`/home/hotel/${id}`);
+    navigate(`/hotel/${id}`);
   };
-
-  const imageURL = {image};
 
   return (
     <div className="eachCard">
         <section onClick={selectHotel}>
-            <img src={imageURL} alt="hotel"/>
+            <img src="./hotel.png" alt="hotel"/>
         </section>
         <p>{id}</p>
         <p>{name}</p>

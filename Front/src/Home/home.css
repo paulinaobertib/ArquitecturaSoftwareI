@@ -1,0 +1,12 @@
+.HotelCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.eachCard {
+    padding: 1%;
+    border-radius: 10%;
+    background-color: rgb(211, 187, 233);
+}

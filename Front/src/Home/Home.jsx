@@ -1,9 +1,10 @@
-import { useContext } from "react";
+//import { useContext } from "react";
 import Hotels from "../Components/Hotels";
-import { AuthContext } from "../Providers/AuthContextProvider";
+import "./../Home/home.css";
+//import { AuthContext } from "../Providers/AuthContextProvider";
 
 const Home = () => {
-  const { user } = useContext(AuthContext);
+  //const { user } = useContext(AuthContext);
   return (
     /*<div>
        {user ? (
@@ -14,6 +15,7 @@ const Home = () => {
       <Hotels />
     </div>*/
     <div>
+      <h1>Hoteles</h1>
       <Hotels />
     </div>
   );
