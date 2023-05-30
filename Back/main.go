@@ -1,7 +1,5 @@
 package main
 
-import _ "booking-api/service"
-
 import (
 	"booking-api/app"
 	"booking-api/db"

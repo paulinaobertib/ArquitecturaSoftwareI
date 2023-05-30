@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import Login from "../Login"
 
 const Home = lazy(() => import("../Home/Home"));
 
@@ -10,5 +9,3 @@ export const navigation = [
         Element: Home,
     }
 ];
-
-export {Login};

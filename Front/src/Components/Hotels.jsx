@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Card from "./Card"
 
-const infoHotel = `http://localhost:8090/user/id`
+const infoHotel = `http://localhost:8090/hotels`
 
 const Hotels = () => {
 
@@ -21,7 +21,7 @@ const Hotels = () => {
         <div className='SeccionHoteles'>
             <div className='HotelCard'>
                 {
-                    hotel.length ? hotel.map((hotel) => <Card key={hotel.id} name={hotel.name} image={hotel.image} id={hotel.id}/>): null
+                    hotel?.length ? hotel.map((hotel) => <Card key={hotel.id} name={hotel.name} image={hotel.image} id={hotel.id}/>): null
                 }
             </div>
         </div>
