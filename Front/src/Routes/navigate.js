@@ -1,9 +1,9 @@
 import { lazy } from "react";
+import { Login } from "./../Login/Login"
+import Register from "./../Register/Register"
 
 const Home = lazy(() => import("../Home/Home"));
 const Product = lazy(() => import("./../Product/product.jsx"));
-const Login = lazy(() => import("../Login/Login"));
-const Register = lazy(() => import("../Register/Register"));
 
 export const navigation = [
     {

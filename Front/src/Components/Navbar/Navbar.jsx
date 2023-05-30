@@ -13,8 +13,8 @@ const Navbar = () => {
     <nav>
       <button onClick={ () => navigate(-1)}>Volver</button>
       <Link to="/">Home</Link>
-      <Link to="/Login">Iniciar Sesion</Link>
-      <Link to="/Register">Registarse</Link>
+      <Link to="/login">Iniciar Sesion</Link>
+      <Link to="/register">Registrarse</Link>
     </nav>
   )
 }
