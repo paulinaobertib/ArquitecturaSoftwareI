@@ -1,12 +1,22 @@
 .HotelCard {
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
 }
 
 .eachCard {
-    padding: 1%;
-    border-radius: 10%;
-    background-color: rgb(211, 187, 233);
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 2px 4px 2px ;
+    border-radius: 20px;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    position: relative;
+    width: 270px;
+    background-color: rgb(105, 125, 238);
+    color: #20332d;
+    font-weight: 800;
 }

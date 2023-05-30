@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./../Home/home.css";
 
-const Card = ({ name, id }) => {
+const Card = ({ name, image, id }) => {
 
   const navigate =  useNavigate();
   
@@ -13,9 +13,8 @@ const Card = ({ name, id }) => {
   return (
     <div className="eachCard">
         <section onClick={selectHotel}>
-            <img src="./hotel.png" alt="hotel"/>
+            <img src={image} alt="hotel"/>
         </section>
-        <p>{id}</p>
         <p>{name}</p>
     </div>
   );

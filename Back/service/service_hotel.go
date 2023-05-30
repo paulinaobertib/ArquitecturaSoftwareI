@@ -32,6 +32,7 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 	if hotel.Id == 0 {
 		return hotelDto, e.NewBadRequestApiError("no se ha encontrado la reserva")
 	}
+	hotelDto.Id = hotel.Id
 	hotelDto.Name = hotel.Name
 	hotelDto.Availability = hotel.Availability
 	hotelDto.Description = hotel.Description
@@ -71,6 +72,7 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 	for _, hotel := range hotels {
 		var hotelDto dto.HotelDto
 
+		hotelDto.Id = hotel.Id
 		hotelDto.Availability = hotel.Availability
 		hotelDto.Description = hotel.Description
 		hotelDto.Email = hotel.Email
@@ -101,3 +103,6 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 
 	return hotelDto, nil
 }
+
+
+//nos falta poner lo del id en todos, y tambien un update para poder editar el producto, preguntar porque la imagen no se ve
