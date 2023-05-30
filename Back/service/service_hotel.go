@@ -39,6 +39,7 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 	hotelDto.Email = hotel.Email
 	hotelDto.Telephone = hotel.Telephone
 	hotelDto.Rooms = hotel.Rooms
+	hotelDto.Image = hotel.Image
 
 	for _, booking := range hotel.Bookings {
 		var dtoBooking dto.BookingDto
@@ -79,6 +80,7 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 		hotelDto.Name = hotel.Name
 		hotelDto.Telephone = hotel.Telephone
 		hotelDto.Rooms = hotel.Rooms
+		hotelDto.Image = hotel.Image
 
 		hotelsDto = append(hotelsDto, hotelDto)
 	}
@@ -96,6 +98,7 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 	hotel.Name = hotelDto.Name
 	hotel.Telephone = hotelDto.Telephone
 	hotel.Rooms = hotelDto.Rooms
+	hotel.Image = hotelDto.Image
 
 	hotel = hotelDAO.InsertHotel(hotel)
 
