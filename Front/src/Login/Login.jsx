@@ -7,7 +7,7 @@ export function Login() {
   const [userName, setUserName] = useState();
   const [password, setPassword] = useState();
   const [error, setError] = useState();
-  const {handleLogin } = useContext(AuthContext);
+  const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const onLogin = async () => {
@@ -17,6 +17,11 @@ export function Login() {
     } else {
       setError("Usuario no existente");
     }
+  };
+
+  // Este es el boton y lo dirige al registro
+  const onRegisterClick = () => {
+    navigate("/Register");
   };
 
   return (
@@ -43,6 +48,11 @@ export function Login() {
         Login
       </Button>
       {error && <Typography variant="h6">Usuario no existente</Typography>}
+      
+      <Button variant="contained" onClick={onRegisterClick}>
+        ¿Todavía no te registraste?
+      </Button>
     </Box>
+  // y aca aparece el boton
   );
 }

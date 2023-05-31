@@ -4,7 +4,7 @@ import { BASE_URL } from "../configs";
 
 export const AuthContext = createContext();
 
-const AuthContextProvider = ({ children }) => {
+export function AuthContextProvider({ children }) {
   const [user, setUser] = useState();
 
   const handleLogin = async (userName) => {
@@ -22,15 +22,13 @@ const AuthContextProvider = ({ children }) => {
     handleLogin,
   };
 
-  // AuthContext guarda la info del usuario y la publica a toda la aplicacion.
-  // Tambien crea el metodo handleLogin que se va a llamar cuando haga el login
   return (
-    <AuthContext.Provider value={propiedades}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={propiedades}>
+      {children}
+    </AuthContext.Provider>
   );
-};
+}
 
 AuthContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-export default AuthContextProvider;
