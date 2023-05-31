@@ -1,0 +1,26 @@
+.detailEach {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+img {
+    width: 50%;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+}
+
+.description {
+    padding: 3%;
+}
+
+.bookingButton {
+    background-color: blue;
+    width: 25%;
+    height: 12%;
+    align-self: center;
+}

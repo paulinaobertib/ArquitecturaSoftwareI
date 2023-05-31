@@ -3,7 +3,8 @@ import { Login } from "./../Login/Login"
 import Register from "./../Register/Register"
 
 const Home = lazy(() => import("../Home/Home"));
-const Product = lazy(() => import("./../Product/product.jsx"));
+const Product = lazy(() => import("./../Product/product"));
+const Booking = lazy(() => import("./../Booking/Booking"));
 
 export const navigation = [
     {
@@ -25,5 +26,10 @@ export const navigation = [
         id: 4,
         path: "/register",
         Element: Register,
+    },
+    {
+        id: 5,
+        path: "/booking",
+        Element: Booking,
     }
 ];
