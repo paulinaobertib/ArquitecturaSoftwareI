@@ -66,7 +66,7 @@ const DatePicker = () => {
           <input type="text" id="end-date" className="end-datepicker" />
         </section>
       </section>
-      <button onClick={handleSubmit}>Enviar fechas</button>
+      <button onClick={handleSubmit} className="dateButton">Enviar fechas</button>
     </div>
   );
 };

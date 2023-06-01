@@ -6,7 +6,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Hoteles</h1>
+      <h1>HOTELES</h1>
       <h6>Elija las fechas:</h6>
       <DatePicker />
       <Hotels />

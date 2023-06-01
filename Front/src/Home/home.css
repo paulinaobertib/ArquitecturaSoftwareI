@@ -45,3 +45,16 @@ img {
     align-items: center;
 }
 
+.dateButton {
+    background-color: rgb(206, 210, 231);
+    margin-top: 1%;
+    margin-bottom: 2%;
+}
+
+input {
+    text-align: center;
+}
+
+.nombreHotel {
+    font-weight: bold;
+}

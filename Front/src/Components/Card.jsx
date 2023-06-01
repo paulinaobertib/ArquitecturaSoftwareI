@@ -15,7 +15,7 @@ const Card = ({ name, image, id }) => {
         <section onClick={selectHotel}>
             <img src={image} alt="hotel"/>
         </section>
-        <p>{name}</p>
+        <h6 className="nombreHotel">{name}</h6>
     </div>
   );
 };
