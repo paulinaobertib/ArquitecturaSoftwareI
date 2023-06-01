@@ -8,8 +8,14 @@ const Booking = lazy(() => import("./../Booking/Booking"));
 
 export const navigation = [
     {
-        id: 1,
+        id: 0,
         path: "/",
+        Element: Home,
+    },
+    // agregue este con 1 para que ande tambien
+    {
+        id: 1,
+        path: "/home",
         Element: Home,
     },
     {

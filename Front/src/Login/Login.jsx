@@ -2,20 +2,23 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export function Login() {
   const [userName, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [error, setError] = useState();
   const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const onLogin = async () => {
-    const isLoggedIn = await handleLogin(userName);
+    const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
     if (isLoggedIn) {
       navigate("/home");
     } else {
-      setError("Usuario no existente");
+      Swal.fire({
+        text: `Usuario o Contraseña incorrecta`,
+        icon: "warning",
+      })
     }
   };
 
@@ -47,12 +50,10 @@ export function Login() {
       <Button variant="contained" onClick={onLogin}>
         Login
       </Button>
-      {error && <Typography variant="h6">Usuario no existente</Typography>}
       
       <Button variant="contained" onClick={onRegisterClick}>
         ¿Todavía no te registraste?
       </Button>
     </Box>
-  // y aca aparece el boton
   );
 }

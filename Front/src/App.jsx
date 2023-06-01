@@ -3,7 +3,7 @@ import { navigation } from "./Routes/navigate";
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthContextProvider } from "./Providers/AuthContextProvider";
+import AuthContextProvider from "./Providers/AuthContextProvider";
 // ese ultimo import hacia que el login no apareciera, lo agregue y quedó
 
 function App() {
