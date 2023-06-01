@@ -25,3 +25,23 @@ img {
     height: 250px;
     width: 250px;
 }
+
+.dateDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.datePicker {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14%;
+}
+
+.datePickerSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
