@@ -8,11 +8,10 @@ const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState();
 
   const handleLogin = async (userName, password) => {
-    const response = await fetch(`${BASE_URL}/user/${userName}`);
+    const response = await fetch(`${BASE_URL}/user/user_name/${userName}`);
     const data = await response.json();
-    // en este if tengo el problema, con id me lo toma pero con username o user_name o user no lo toma
-    // lo logico seria if(data.username === userName && ...) que ande pero nop
-    if (data.id && data.password === password) {
+
+    if (data.user_name === userName && data.password === password) {
       // Comparar también la contraseña ingresada
       setUser(data);
       return true;

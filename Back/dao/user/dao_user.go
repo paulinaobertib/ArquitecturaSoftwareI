@@ -23,7 +23,7 @@ func GetUserByUsername(username string) model.User {
 	var user model.User
 
 	//el first me devuelve el primer usuario que encuentra
-	Db.Where("username = ?", username).Preload("Booking").First(&user)
+	Db.Where("user_name = ?", username).Preload("Booking").First(&user)
 	//imprime la información
 	log.Debug("User: ", user)
 
