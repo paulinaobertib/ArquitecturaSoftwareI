@@ -41,6 +41,21 @@ func GetUserByUsername(c *gin.Context) {
 	c.JSON(http.StatusOK, userDto)
 }
 
+func GetUserByEmail(c *gin.Context) {
+	log.Debug("Email to load: " + c.Param("email"))
+
+	mail := c.Param("email")
+	var userDto dto.UserDto
+
+	userDto, err := service.UserService.GetUserByEmail(mail)
+
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+	c.JSON(http.StatusOK, userDto)
+}
+
 func GetUsers(c *gin.Context) {
 	var usersDto dto.UsersDto
 	usersDto, err := service.UserService.GetUsers()
