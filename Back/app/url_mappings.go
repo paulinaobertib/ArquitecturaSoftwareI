@@ -32,3 +32,4 @@ func mapUrls() {
 
 	log.Info("Finishing mappings configurations")
 }
+
