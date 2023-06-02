@@ -57,3 +57,29 @@ func BookingInsert(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, bookingDto) // estos son los mensajes que se muestran, en este caso seria el creado, 201
 }
+
+func RoomsAvailable(c *gin.Context) {
+	// Obtener los parámetros de consulta
+	params := c.Request.URL.Query()
+
+	// Obtener los valores de los parámetros
+	Id, _ := strconv.Atoi(params.Get("id"))
+	DateFrom := params.Get("date_from")
+	DateTo := params.Get("date_to")
+
+	var bookingDTO dto.BookingDto
+	
+	bookingDTO.HotelId = Id
+	bookingDTO.DateFrom = DateFrom
+	bookingDTO.DateTo = DateTo
+
+	var roomsAvailable dto.RoomsAvailable
+
+	roomsAvailable, er := service.BookingService.RoomsAvailable(bookingDTO)
+
+	if er != nil {
+		c.JSON(er.Status(), er)
+		return
+	}
+	c.JSON(http.StatusOK, roomsAvailable)
+}

@@ -9,6 +9,7 @@ const Home = () => {
       <h1>HOTELES</h1>
       <h6>Elija las fechas:</h6>
       <DatePicker />
+      <h2>Todos los hoteles:</h2>
       <Hotels />
     </div>
   );

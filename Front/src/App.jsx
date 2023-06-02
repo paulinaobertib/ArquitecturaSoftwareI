@@ -5,6 +5,8 @@ import Footer from "./Components/Footer/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthContextProvider from "./Providers/AuthContextProvider";
 // ese ultimo import hacia que el login no apareciera, lo agregue y quedó
+import React from "react";
+import LoadingIndicator from "./Components/LoadingIndicator";
 
 function App() {
   return (
@@ -18,7 +20,9 @@ function App() {
               element={
                 <>
                   <Navbar />
-                  <Element />
+                  <React.Suspense fallback={<LoadingIndicator />}>
+                    <Element />
+                  </React.Suspense>
                   <Footer />
                 </>
               }
@@ -30,5 +34,6 @@ function App() {
     </BrowserRouter>
   );
 }
+
 
 export default App;
