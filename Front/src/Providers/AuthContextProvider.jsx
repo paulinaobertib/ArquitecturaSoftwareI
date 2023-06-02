@@ -24,10 +24,57 @@ const AuthContextProvider = ({ children }) => {
     setUser(undefined);
   };
 
+  const handleRegister = async (
+    userName,
+    password,
+    email,
+    name,
+    rol,
+    lastName,
+    state
+  ) => {
+    const response = await fetch(`${BASE_URL}/user/email/${email}`);
+    const data = await response.json();
+
+    if (data.email === email) {
+      return false;
+    }
+
+    // Crear un nuevo usuario con los datos proporcionados desde el front
+    const newUser = {
+      user_name: userName,
+      password: password,
+      email: email,
+      name: name,
+      rol: rol,
+      last_name: lastName,
+      state: state,
+    };
+
+    // Crear un nuevo usuario con los datos proporcionados desde el front
+    const createUserResponse = await fetch(`${BASE_URL}/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    if (!createUserResponse.ok) {
+      // Ocurrió un error al registrar el usuario
+      throw new Error("Error al registrar el usuario");
+    }
+
+    const createdUser = await createUserResponse.json();
+    setUser(createdUser);
+    return true; // Usuario registrado exitosamente
+  };
+
   const propiedades = {
     user,
     handleLogin,
     logOut,
+    handleRegister,
   };
 
   return (

@@ -14,6 +14,7 @@ type userService struct{}
 type userServiceInterface interface {
 	GetUserById(id int) (dto.UserDto, e.ApiError)
 	GetUserByUsername(username string) (dto.UserDto, e.ApiError)
+	GetUserByEmail(username string) (dto.UserDto, e.ApiError)
 	GetUsers() (dto.UsersDto, e.ApiError)
 	InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError)
 }
@@ -70,6 +71,29 @@ func (u *userService) GetUserByUsername(username string) (dto.UserDto, e.ApiErro
 
 	//si no lo trae, me da error de que no encontró el usuario
 	if user.UserName == "" {
+		return userDto, e.NewBadRequestApiError("no se ha encontrado el usuario")
+	}
+
+	userDto.Id = user.Id
+	userDto.Name = user.Name
+	userDto.LastName = user.LastName
+	userDto.UserName = user.UserName
+	userDto.Password = user.Password
+	userDto.Email = user.Email
+	userDto.Rol = user.Rol
+	userDto.State = user.State
+
+	return userDto, nil
+}
+
+func (u *userService) GetUserByEmail(mail string) (dto.UserDto, e.ApiError) {
+
+	var user model.User = userDAO.GetUserByEmail(mail)
+	//declaro un dto de usuario
+	var userDto dto.UserDto
+
+	//si no lo trae, me da error de que no encontró el usuario
+	if user.Email== "" {
 		return userDto, e.NewBadRequestApiError("no se ha encontrado el usuario")
 	}
 

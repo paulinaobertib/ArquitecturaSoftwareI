@@ -30,6 +30,17 @@ func GetUserByUsername(username string) model.User {
 	return user
 }
 
+func GetUserByEmail(mail string) model.User {
+	var user model.User
+
+	//el first me devuelve el primer usuario que encuentra
+	Db.Where("email = ?", mail).Preload("Booking").First(&user)
+	//imprime la información
+	log.Debug("User: ", user)
+
+	return user
+}
+
 func GetUsers() model.Users {
 	var users model.Users
 

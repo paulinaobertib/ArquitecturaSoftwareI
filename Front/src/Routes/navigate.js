@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Login } from "./../Login/Login"
-import Register from "./../Register/Register"
+import { Register } from "./../Register/Register"
 
 const Home = lazy(() => import("../Home/Home"));
 const Product = lazy(() => import("./../Product/product"));
