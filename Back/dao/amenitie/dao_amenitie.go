@@ -19,7 +19,7 @@ func GetAmenitieById(id int) model.Amenitie {
 
 func GetAmenities() model.Amenities {
 	var amenities model.Amenities
-	Db.Preload("Hotel").First(&amenities)
+	Db.Find(&amenities)
 
 	log.Debug("Amenities: ", amenities)
 
