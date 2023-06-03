@@ -86,7 +86,6 @@ const AdminUser = () => {
     });
   };
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -123,7 +122,6 @@ const AdminUser = () => {
     }
   };
   
-
   return (
     <div>
       <h1>PAGINA DE ADMINISTRADOR</h1>
