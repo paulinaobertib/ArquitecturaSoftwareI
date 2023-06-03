@@ -6,6 +6,41 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 
 const AdminUser = () => {
+
+    const [AmenitieData, setAmenitieData] = useState({
+        name: '',
+        description: '',
+      });
+
+      const handleInputChange = (e) => {
+        setAmenitieData({
+          ...AmenitieData,
+          [e.target.name]: e.target.value
+        });
+      };
+
+      const addAmenitie = () => {
+        fetch(`${BASE_URL}/amenitie`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(AmenitieData)
+        })
+        .then(response => {
+          console.log(response); // Agrega esta línea para verificar la respuesta
+          return response.json();
+        })
+        .then(data => {
+          console.log('Amenidad agregada:', data);
+          // Realizar cualquier otra acción después de agregar la amenidad
+        })
+        .catch(error => {
+          console.error('Error al agregar la amenidad:', error);
+        });
+      }
+      
+
   const [hotelData, setHotelData] = useState({
     name: '',
     telephone: '',
@@ -178,6 +213,28 @@ const AdminUser = () => {
           <button type="submit">Agregar Hotel</button>
         </form>
       </div>
+      <div>
+        <h2>Agregar Amenitie:</h2>
+        <label>
+        Nombre:
+        <input
+          type="text"
+          name="name"
+          value={AmenitieData.name}
+          onChange={handleInputChange}
+        />
+      </label>
+      <label>
+        Descripcion:
+        <input
+          type="text"
+          name="description"
+          value={AmenitieData.description}
+          onChange={handleInputChange}
+        />
+      </label>
+        <button onClick={addAmenitie}>Agregar</button>
+        </div>
     </div>
   );
 };
