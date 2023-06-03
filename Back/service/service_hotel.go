@@ -2,6 +2,7 @@ package service
 
 import (
 	hotelDAO "booking-api/dao/hotel"
+	amenitieDAO "booking-api/dao/amenitie"
 
 	"booking-api/dto"
 	"booking-api/model"
@@ -14,6 +15,7 @@ type hotelServiceInterface interface {
 	GetHotelById(id int) (dto.HotelDto, e.ApiError)
 	GetHotels() (dto.HotelsDto, e.ApiError)
 	InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError)
+	AddHotelAmenitie(hotelId, amenitieId int) e.ApiError
 }
 
 var (
@@ -41,34 +43,13 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 	hotelDto.Rooms = hotel.Rooms
 	hotelDto.Image = hotel.Image
 
-	/*for _, booking := range hotel.Bookings {
-		var dtoBooking dto.BookingDto
-
-		dtoBooking.DateFrom = booking.DateFrom.Format(layout)
-		dtoBooking.DateTo = booking.DateTo.Format(layout)
-		dtoBooking.Duration = booking.Duration
-		dtoBooking.Price = booking.Price
-		dtoBooking.HotelId = booking.HotelId
-
-		hotelDto.BookingsDto = append(hotelDto.BookingsDto, dtoBooking)
-	}
-
-	for _, amenitie := range hotel.Amenities {
-		var dtoAmenitie dto.AmenitieDto
-
-		dtoAmenitie.Name = amenitie.Name
-		dtoAmenitie.Description = amenitie.Description
-
-		hotelDto.AmenitiesDto = append(hotelDto.AmenitiesDto, &dtoAmenitie)
-	}*/
-
 	return hotelDto, nil
 }
 
 func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 
 	var hotels model.Hotels = hotelDAO.GetHotels()
-	var hotelsDto dto.HotelsDto
+	hotelsList := make([]dto.HotelDto, 0)
 
 	for _, hotel := range hotels {
 		var hotelDto dto.HotelDto
@@ -82,15 +63,26 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 		hotelDto.Rooms = hotel.Rooms
 		hotelDto.Image = hotel.Image
 
-		hotelsDto = append(hotelsDto, hotelDto)
+		amenities := make([]string, 0)
+
+		for _, amenity := range hotel.Amenities {
+			amenities = append(amenities, amenity.Name)
+		}
+
+		hotelDto.Amenities = amenities
+
+		hotelsList = append(hotelsList, hotelDto)
 	}
 
-	return hotelsDto, nil
+	return dto.HotelsDto{
+		Hotels: hotelsList,
+	}, nil
 }
 
 func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError) {
 
 	var hotel model.Hotel
+	//var amenitie model.Amenitie
 
 	hotel.Availability = hotelDto.Availability
 	hotel.Description = hotelDto.Description
@@ -99,6 +91,7 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 	hotel.Telephone = hotelDto.Telephone
 	hotel.Rooms = hotelDto.Rooms
 	hotel.Image = hotelDto.Image
+	//hotel.Amenities = append(hotel.Amenities, &amenitie)
 
 	hotel = hotelDAO.InsertHotel(hotel)
 
@@ -107,5 +100,29 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 	return hotelDto, nil
 }
 
+func (s *hotelService) AddHotelAmenitie(hotelId, amenitieId int) e.ApiError {
+	// Obtener el hotel por su ID
+	hotel := hotelDAO.GetHotelById(hotelId)
+	if hotel.Id == 0 {
+		return e.NewNotFoundApiError("Hotel not found")
+	}
 
-//nos falta poner lo del id en todos, y tambien un update para poder editar el producto, preguntar porque la imagen no se ve
+	// Obtener la amenidad por su ID
+	amenitie := amenitieDAO.GetAmenitieById(amenitieId)
+	if amenitie.Id == 0 {
+		return e.NewNotFoundApiError("Amenitie not found")
+	}
+
+	// Verificar si la amenidad ya está asociada al hotel
+	for _, amenity := range hotel.Amenities {
+		if amenity.Id == amenitieId {
+			return e.NewBadRequestApiError("Amenitie already added to the hotel")
+		}
+	}
+
+	// Asociar la amenidad al hotel
+	hotel.Amenities = append(hotel.Amenities, &amenitie)
+	hotelDAO.UpdateHotel(hotel)
+
+	return nil
+}

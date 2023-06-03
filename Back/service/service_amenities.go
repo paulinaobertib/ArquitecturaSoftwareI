@@ -14,6 +14,7 @@ type amenitieServiceInterface interface {
 	GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError)
 	GetAmenities() (dto.AmenitiesDto, e.ApiError)
 	InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError)
+	GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError)
 }
 
 var (
@@ -37,27 +38,13 @@ func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) 
 	amenitieDto.Name = amenitie.Name
 	amenitieDto.Description = amenitie.Description
 
-	/*
-	for _, hotel := range amenitie.Hotels{
-		var dtoHotel dto.HotelDto
-
-		dtoHotel.Availability = hotel.Availability
-		dtoHotel.Name = hotel.Name
-		dtoHotel.Telephone = hotel.Telephone
-		dtoHotel.Description = hotel.Description
-		dtoHotel.Email = hotel.Email
-		dtoHotel.Rooms = hotel.Rooms
-
-		amenitieDto.HotelsDto = append(amenitieDto.HotelsDto, &dtoHotel)
-	}*/
-
 	return amenitieDto, nil
 }
 
 func (h *amenitieService) GetAmenities() (dto.AmenitiesDto, e.ApiError) {
 
 	var amenities model.Amenities = amenitieDAO.GetAmenities()
-	var amenitiesDto dto.AmenitiesDto
+	amenitiesList := make([]dto.AmenitieDto, 0)
 
 	for _, amenitie := range amenities {
 		var amenitieDto dto.AmenitieDto
@@ -66,10 +53,12 @@ func (h *amenitieService) GetAmenities() (dto.AmenitiesDto, e.ApiError) {
 		amenitieDto.Id = amenitie.Id
 		amenitieDto.Name = amenitie.Name
 
-		amenitiesDto = append(amenitiesDto, amenitieDto)
+		amenitiesList = append(amenitiesList, amenitieDto)
 	}
 
-	return amenitiesDto, nil
+	return dto.AmenitiesDto{
+		Amenities: amenitiesList,
+	}, nil
 }
 
 func (h *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError) {
@@ -77,7 +66,6 @@ func (h *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.Ameni
 	var amenitie model.Amenitie
 
 	amenitie.Description = amenitieDto.Description
-	amenitie.Id = amenitieDto.Id
 	amenitie.Name = amenitieDto.Name
 
 	amenitie = amenitieDAO.InsertAmenitie(amenitie)
@@ -85,4 +73,21 @@ func (h *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.Ameni
 	amenitieDto.Id = amenitie.Id
 
 	return amenitieDto, nil
+}
+
+func (h *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError) {
+	var amenities model.Amenities = amenitieDAO.GetAmenitiesByHotelId(hotelId)
+	amenitiesList := make([]dto.AmenitieDto, 0)
+
+	for _, amenitie := range amenities {
+		var amenitieDto dto.AmenitieDto
+		amenitieDto.Id = amenitie.Id
+		amenitieDto.Name = amenitie.Name
+
+		amenitiesList = append(amenitiesList, amenitieDto)
+	}
+
+	return dto.AmenitiesDto{
+		Amenities: amenitiesList,
+	}, nil
 }

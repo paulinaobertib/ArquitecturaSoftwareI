@@ -1,181 +1,188 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { BASE_URL } from "../configs";
-import { MenuItem, TextField } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 const AdminUser = () => {
+  const [hotelData, setHotelData] = useState({
+    name: '',
+    telephone: '',
+    email: '',
+    rooms: '',
+    description: '',
+    availability: 1,
+    image: '',
+    amenities: {},
+  });
 
-    const [hotelData, setHotelData] = useState({
-        name: "",
-        telephone: "",
-        email: "",
-        rooms: "",
-        description: "",
-        image:"",
-        availability: 1,
-        amenities: [],
-      });
+  const [amenitiesList, setAmenitiesList] = useState([]);
+
+  const getHotels = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/hotels`);
+      const data = await response.json();
+      console.log('Hoteles:', data);
+    } catch (error) {
+      console.error('Error fetching hotels:', error);
+    }
+  };
+
+  const getAmenities = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/amenities`);
+      const data = await response.json();
+      setAmenitiesList(data.amenities || []);
+      console.log('Amenities:', data.amenities);
+    } catch (error) {
+      console.error('Error fetching amenities:', error);
+    }
+  };
+
+  useEffect(() => {
+    getHotels();
+    getAmenities();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     
-    const [amenitiesList, setAmenitiesList] = useState([]);
-    const [selectedAmenities, setSelectedAmenities] = useState([]);
-    
-    const getAmenities = async () => {
-        try {
-          const response = await fetch(`${BASE_URL}/amenities`);
-          const resolve = await response.json();
-          setAmenitiesList(resolve);
-        } catch (error) {
-          console.error('Error fetching amenities:', error);
-        }
-    };
-    
-    useEffect(() => {
-        getAmenities();
-    }, []);
-    
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const parsedValue = name === 'rooms' ? parseInt(value) : value;
-      
+    if (name === 'rooms') {
+      // Verificar que el valor sea un número entero
+      const intValue = parseInt(value);
+      if (!isNaN(intValue)) {
         setHotelData((prevHotelData) => ({
           ...prevHotelData,
-          [name]: parsedValue,
+          [name]: intValue,
         }));
-    };
+      }
+    } else {
+      setHotelData((prevHotelData) => ({
+        ...prevHotelData,
+        [name]: value,
+      }));
+    }
+  };
+  
 
-    const handleAmenityChange = (event) => {
-        const { value, checked } = event.target;
-        if (checked) {
-          setHotelData((prevHotelData) => ({
-            ...prevHotelData,
-            amenities: [...prevHotelData.amenities, value],
-          }));
-        } else {
-          setHotelData((prevHotelData) => ({
-            ...prevHotelData,
-            amenities: prevHotelData.amenities.filter((amenity) => amenity !== value),
-          }));
-        }
+  const handleAmenityChange = (amenityId) => {
+    setHotelData((prevHotelData) => {
+      const isChecked = prevHotelData.amenities[amenityId] || false;
+      const updatedAmenities = { ...prevHotelData.amenities };
+  
+      if (isChecked) {
+        // Remove the amenity
+        delete updatedAmenities[amenityId];
+      } else {
+        // Add the amenity
+        updatedAmenities[amenityId] = amenityId.toString(); // Convert amenityId to string
+      }
+  
+      return {
+        ...prevHotelData,
+        amenities: updatedAmenities,
       };
-    
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    
-        const dataToSend = {
-            ...hotelData,
-            amenities: selectedAmenities,
-        };
-    
-        //Lamada al back para cargar los hoteles
-        fetch(`${BASE_URL}/hotel`, {
-            method: "POST",
-            body: JSON.stringify(dataToSend),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Hotel registrado exitosamente:", data);
-            setHotelData({
-                name: "",
-                telephone: "",
-                email: "",
-                rooms: "",
-                description: "",
-                image:"",
-                amenities: [],
-            });
-            setSelectedAmenities([]);
-        })
-        .catch((error) => {
-            console.error("Error al registrar el hotel:", error);
+    });
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const amenitiesArray = Object.keys(hotelData.amenities); // Convert amenities object to an array of keys (strings)
+      const hotelDataWithArray = { ...hotelData, amenities: amenitiesArray };
+  
+      const response = await fetch(`${BASE_URL}/hotel`, {
+        method: 'POST',
+        body: JSON.stringify(hotelDataWithArray),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Nuevo hotel registrado:', data);
+        setHotelData({
+          name: '',
+          telephone: '',
+          email: '',
+          rooms: '',
+          description: '',
+          availability: 1,
+          image: '',
+          amenities: {},
         });
-    };
+      } else {
+        console.error('Error al registrar el hotel:', response.status);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+  };
+  
 
-    return (
-        <div>
-            <h1>PAGINA DE ADMINISTRADOR</h1>
-            <div>
-                <h2>Registrar un nuevo hotel</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                    Nombre:
-                    <input
-                        type="text"
-                        name="name"
-                        value={hotelData.name}
-                        onChange={handleChange}
+  return (
+    <div>
+      <h1>PAGINA DE ADMINISTRADOR</h1>
+      <div>
+        <h2>Registrar un nuevo hotel</h2>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Nombre:
+            <input type="text" name="name" value={hotelData.name} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>
+            Teléfono:
+            <input type="text" name="telephone" value={hotelData.telephone} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>
+            Email:
+            <input type="email" name="email" value={hotelData.email} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>
+            Habitaciones:
+            <input type="number" name="rooms" value={hotelData.rooms} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>
+            Descripción:
+            <input type="text" name="description" value={hotelData.description} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>
+            Imagen:
+            <input type="text" name="image" value={hotelData.image} onChange={handleChange} required />
+          </label>
+          <br />
+          <label>Amenities:</label>
+          <List>
+            {amenitiesList.map((amenity) => (
+              <ListItem key={amenity.id}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={hotelData.amenities[amenity.id] || false}
+                      onChange={() => handleAmenityChange(amenity.id)}
                     />
-                    </label>
-                    <br />
-                    <label>
-                    Telefono:
-                    <input
-                        type="text"
-                        name="telephone"
-                        value={hotelData.telephone}
-                        onChange={handleChange}
-                    />
-                    </label>
-                    <br />
-                    <label>
-                    Email:
-                    <input
-                        type="email"
-                        name="email"
-                        value={hotelData.email}
-                        onChange={handleChange}
-                    />
-                    </label>
-                    <br />
-                    <label>
-                    Rooms:
-                    <input
-                        type="text"
-                        name="rooms"
-                        value={hotelData.rooms}
-                        onChange={handleChange}
-                    />
-                    </label>
-                    <br />
-                    <label>
-                    Descripción:
-                    <textarea
-                        name="description"
-                        value={hotelData.description}
-                        onChange={handleChange}
-                    ></textarea>
-                    </label>
-                    <br />
-                    <label>
-                    Image:
-                    <input
-                        type="text"
-                        name="image"
-                        value={hotelData.image}
-                        onChange={handleChange}
-                    />
-                    </label>
-                    <br />
-                    <TextField
-                        id="amenities"
-                        select
-                        label="Amenities"
-                        value={hotelData.amenities}
-                        onChange={handleAmenityChange}
-                    >
-                        {amenitiesList.map((amenity) => (
-                        <MenuItem key={amenity.id} value={amenity.id}>
-                            {amenity.name}
-                        </MenuItem>
-                        ))}
-                    </TextField>
-                    <br/>
-                    <button type="submit">Registrar</button>
-                </form>
-            </div>
-        </div>
-  )
-}
+                  }
+                  label={amenity.name}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <br />
+          <button type="submit">Agregar Hotel</button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-export default AdminUser
+export default AdminUser;
+

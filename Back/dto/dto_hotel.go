@@ -11,8 +11,11 @@ type HotelDto struct {
 	Image        string `json:"image"`
 
 	BookingsDto BookingsDto `json:"bookings,omitempty"`
+	Amenities   []string    `json:"amenities"`
 
-	AmenitiesDto []*AmenitieDto // LISTO LA RELACION EN EL DTO 
+	//AmenitiesDto []*AmenitieDto // LISTO LA RELACION EN EL DTO
 }
 
-type HotelsDto []HotelDto
+type HotelsDto struct {
+	Hotels []HotelDto `json:"hotels"`
+}

@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import { waait } from "../Components/helper";
 
 export function Login() {
-  const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 

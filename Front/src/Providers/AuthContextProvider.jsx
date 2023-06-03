@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState} from "react";
 import PropTypes from "prop-types";
 import { BASE_URL } from "../configs";
 import { useNavigate } from "react-router-dom";
@@ -9,19 +9,29 @@ const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
+  const fetchCurrentUser = async () => {
+    if (user && user.id) {
+      const response = await fetch(`${BASE_URL}/user/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        setUser(null);
+      }
+    }
+  };
+
   const handleLogin = async (userName, password) => {
     const response = await fetch(`${BASE_URL}/user/user_name/${userName}`);
     const data = await response.json();
 
     if (data.user_name === userName && data.password === password) {
-      // Comparar también la contraseña ingresada
       setUser(data);
       return true;
     }
     return false;
   };
 
-  // Se desloguea
   const logOut = () => {
     setUser(undefined);
     navigate("/Home");
@@ -43,7 +53,6 @@ const AuthContextProvider = ({ children }) => {
       return false;
     }
 
-    // Crear un nuevo usuario con los datos proporcionados desde el front
     const newUser = {
       user_name: userName,
       password: password,
@@ -54,7 +63,6 @@ const AuthContextProvider = ({ children }) => {
       state: state,
     };
 
-    // Crear un nuevo usuario con los datos proporcionados desde el front
     const createUserResponse = await fetch(`${BASE_URL}/user`, {
       method: "POST",
       headers: {
@@ -64,14 +72,13 @@ const AuthContextProvider = ({ children }) => {
     });
 
     if (!createUserResponse.ok) {
-      // Ocurrió un error al registrar el usuario
       throw new Error("Error al registrar el usuario");
     }
 
     const createdUser = await createUserResponse.json();
     setUser(createdUser);
     setUser(undefined);
-    return true; // Usuario registrado exitosamente
+    return true;
   };
 
   const propiedades = {
@@ -79,6 +86,7 @@ const AuthContextProvider = ({ children }) => {
     handleLogin,
     logOut,
     handleRegister,
+    fetchCurrentUser,
   };
 
   return (

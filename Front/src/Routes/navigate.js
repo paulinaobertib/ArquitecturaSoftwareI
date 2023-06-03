@@ -6,7 +6,11 @@ import { Register } from "./../Register/Register"
 const Home = lazy(() => import("../Home/Home"));
 const Product = lazy(() => import("./../Product/product"));
 const Booking = lazy(() => import("./../Booking/Booking"));
+<<<<<<< HEAD
 const Perfil = lazy(() => import("./../Perfil/Perfil"));
+=======
+const AdminUser = lazy(() => import("./../AdminUser/AdminUser"));
+>>>>>>> 8e5970f7ccb59af61a67c828ccd2671dfce1b17a
 
 export const navigation = [
     {
@@ -43,5 +47,9 @@ export const navigation = [
         id: 6,
         path: "/perfil",
         Element: Perfil,
+    }{
+id: 7,
+        path: "/admin",
+        Element: AdminUser,
     }
 ];

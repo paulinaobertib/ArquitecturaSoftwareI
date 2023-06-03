@@ -38,3 +38,8 @@ func InsertHotel(hotel model.Hotel) model.Hotel {
 	log.Debug("Hotel Created: ", hotel.Id)
 	return hotel
 }
+
+func UpdateHotel(hotel model.Hotel) {
+	Db.Save(&hotel)
+	log.Debug("Hotel Updated: ", hotel.Id)
+}
