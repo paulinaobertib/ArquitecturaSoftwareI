@@ -10,9 +10,10 @@ import {
 import Swal from "sweetalert2";
 import { waait } from "../Components/helper";
 import { AuthContext } from "../Providers/AuthContextProvider";
+import { useNavigate } from "react-router-dom";
 
 export function Register() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [name, setName] = useState();
   const [userName, setUserName] = useState();
   const [lastName, setLastName] = useState();
@@ -41,8 +42,9 @@ export function Register() {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
-      });
-    } else {
+      }).then(() => {
+        navigate("/Login");
+    })} else {
       Swal.fire({
         title: "👀",
         text: "No has ingresado todos los valores o tu mail ya se encuentra registrado",
@@ -50,6 +52,8 @@ export function Register() {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
+      }).then(() => {
+        navigate("/Login");
       });
     }
   };
@@ -101,6 +105,7 @@ export function Register() {
       <Select
         label="Rol"
         value={rol}
+        placeholder="Su rol es"
         onChange={(event) => setRol(event.target.value === "admin")}
       >
         <MenuItem value="user">Usuario común</MenuItem>

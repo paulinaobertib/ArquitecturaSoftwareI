@@ -1,10 +1,12 @@
 import { lazy } from "react";
 import { Login } from "./../Login/Login"
 import { Register } from "./../Register/Register"
+// import { Perfil } from "./../Perfil/Perfil"
 
 const Home = lazy(() => import("../Home/Home"));
 const Product = lazy(() => import("./../Product/product"));
 const Booking = lazy(() => import("./../Booking/Booking"));
+const Perfil = lazy(() => import("./../Perfil/Perfil"));
 const AdminUser = lazy(() => import("./../AdminUser/AdminUser"));
 
 export const navigation = [
@@ -13,7 +15,6 @@ export const navigation = [
         path: "/",
         Element: Home,
     },
-    // agregue este con 1 para que ande tambien
     {
         id: 1,
         path: "/home",
@@ -41,6 +42,11 @@ export const navigation = [
     },
     {
         id: 6,
+        path: "/perfil",
+        Element: Perfil,
+    },
+    {
+        id: 7,
         path: "/admin",
         Element: AdminUser,
     }

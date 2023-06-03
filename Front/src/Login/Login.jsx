@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import { waait } from "../Components/helper";
 
 export function Login() {
-  const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -34,6 +34,13 @@ export function Login() {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
+      }).then(() => {
+        navigate("/");
+      });
+    } else {
+      Swal.fire({
+        text: `Usuario o Contraseña incorrecta`,
+        icon: "warning",
       });
     }
   };
