@@ -21,14 +21,16 @@ func mapUrls() {
 	router.GET("/hotel/:id", hotelController.GetHotelById)
 	router.GET("/hotels", hotelController.GetHotels)
 	router.POST("/hotel", hotelController.HotelInsert)
+	router.PUT("/hotel/:id/add-amenitie/:id_amenitie", hotelController.AddHotelAmenitie)
 
 	router.GET("/booking/:id", bookingController.GetBookingById)
 	router.GET("/bookings", bookingController.GetBookings)
 	router.POST("/booking", bookingController.BookingInsert)
 	router.GET("/booking/availability/:id/:date_from/:date_to", bookingController.RoomsAvailable)
+	router.GET("/rooms-available", bookingController.RoomsAvailable)
 
 	router.GET("/amenitie/:id", amenitieController.GetAmenitieById)
-	router.GET("/amenitie", amenitieController.GetAmenities)
+	router.GET("/amenities", amenitieController.GetAmenities)
 	router.POST("/amenitie", amenitieController.AmenitieInsert)
 
 	log.Info("Finishing mappings configurations")

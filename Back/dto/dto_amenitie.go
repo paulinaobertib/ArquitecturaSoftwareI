@@ -8,4 +8,6 @@ type AmenitieDto struct {
 	//HotelsDto []*HotelDto // LISTO LA RELACION EN EL DTO 
 }
 
-type AmenitiesDto []AmenitieDto
+type AmenitiesDto struct {
+	Amenities []AmenitieDto `json:"amenities"`
+}
