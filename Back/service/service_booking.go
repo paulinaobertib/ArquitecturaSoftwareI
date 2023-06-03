@@ -82,14 +82,17 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 }
 
 func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError) {
-
 	hotelID := bookingDto.HotelId
 	DateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
 	DateTo, _ := time.Parse(layout, bookingDto.DateTo)
+
 	bookings := bookingDAO.GetBookingByHotelAndDates(hotelID, DateFrom, DateTo)
-	var roomsAvailable dto.RoomsAvailable
-	hotel_rooms := hotelDAO.GetHotelById(hotelID).Rooms
-	//el error esta en hotel_rooms
-	roomsAvailable.Rooms = hotel_rooms - bookings
+	hotel := hotelDAO.GetHotelById(hotelID)
+
+	roomsAvailable := dto.RoomsAvailable{
+		//HotelID: hotelID,
+		Rooms:   hotel.Rooms - bookings,
+	}
+
 	return roomsAvailable, nil
 }

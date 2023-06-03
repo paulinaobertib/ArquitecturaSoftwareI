@@ -59,27 +59,22 @@ func BookingInsert(c *gin.Context) {
 }
 
 func RoomsAvailable(c *gin.Context) {
-	// Obtener los parámetros de consulta
-	params := c.Request.URL.Query()
+	params := c.Params
+	hotelID, _ := strconv.Atoi(params.ByName("id"))
+	dateFrom := params.ByName("date_from")
+	dateTo := params.ByName("date_to")
 
-	// Obtener los valores de los parámetros
-	Id, _ := strconv.Atoi(params.Get("id"))
-	DateFrom := params.Get("date_from")
-	DateTo := params.Get("date_to")
+	bookingDTO := dto.BookingDto{
+		HotelId:   hotelID,
+		DateFrom:  dateFrom,
+		DateTo:    dateTo,
+	}
 
-	var bookingDTO dto.BookingDto
-	
-	bookingDTO.HotelId = Id
-	bookingDTO.DateFrom = DateFrom
-	bookingDTO.DateTo = DateTo
-	
-	var roomsAvailable dto.RoomsAvailable
-
-	roomsAvailable, er := service.BookingService.RoomsAvailable(bookingDTO)
-
-	if er != nil {
-		c.JSON(er.Status(), er)
+	roomsAvailable, err := service.BookingService.RoomsAvailable(bookingDTO)
+	if err != nil {
+		c.JSON(err.Status(), err)
 		return
 	}
+
 	c.JSON(http.StatusOK, roomsAvailable)
 }

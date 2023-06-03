@@ -4,6 +4,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import Button from '@mui/material/Button';
 
 const AdminUser = () => {
 
@@ -210,7 +211,7 @@ const AdminUser = () => {
             ))}
           </List>
           <br />
-          <button type="submit">Agregar Hotel</button>
+          <Button variant="contained" color="primary" type="submit">Agregar Hotel</Button>
         </form>
       </div>
       <div>
@@ -233,7 +234,7 @@ const AdminUser = () => {
           onChange={handleInputChange}
         />
       </label>
-        <button onClick={addAmenitie}>Agregar</button>
+        <Button variant="contained" color="primary" onClick={addAmenitie}>Agregar Amenitie</Button>
         </div>
     </div>
   );
