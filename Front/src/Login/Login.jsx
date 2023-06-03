@@ -34,6 +34,13 @@ export function Login() {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
+      }).then(() => {
+        navigate("/");
+      });
+    } else {
+      Swal.fire({
+        text: `Usuario o Contraseña incorrecta`,
+        icon: "warning",
       });
     }
   };

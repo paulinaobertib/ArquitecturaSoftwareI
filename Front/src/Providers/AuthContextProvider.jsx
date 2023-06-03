@@ -1,11 +1,13 @@
 import { createContext, useState } from "react";
 import PropTypes from "prop-types";
 import { BASE_URL } from "../configs";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState();
+  const navigate = useNavigate();
 
   const handleLogin = async (userName, password) => {
     const response = await fetch(`${BASE_URL}/user/user_name/${userName}`);
@@ -22,6 +24,7 @@ const AuthContextProvider = ({ children }) => {
   // Se desloguea
   const logOut = () => {
     setUser(undefined);
+    navigate("/Home");
   };
 
   const handleRegister = async (
@@ -67,6 +70,7 @@ const AuthContextProvider = ({ children }) => {
 
     const createdUser = await createUserResponse.json();
     setUser(createdUser);
+    setUser(undefined);
     return true; // Usuario registrado exitosamente
   };
 
