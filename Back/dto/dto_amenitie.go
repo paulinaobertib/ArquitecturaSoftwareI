@@ -5,7 +5,9 @@ type AmenitieDto struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 
-	HotelsDto []*HotelDto // LISTO LA RELACION EN EL DTO 
+	//HotelsDto []*HotelDto // LISTO LA RELACION EN EL DTO 
 }
 
-type AmenitiesDto []AmenitieDto
+type AmenitiesDto struct {
+	Amenities []AmenitieDto `json:"amenities"`
+}
