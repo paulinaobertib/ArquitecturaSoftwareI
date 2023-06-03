@@ -72,7 +72,7 @@ func RoomsAvailable(c *gin.Context) {
 	bookingDTO.HotelId = Id
 	bookingDTO.DateFrom = DateFrom
 	bookingDTO.DateTo = DateTo
-
+	
 	var roomsAvailable dto.RoomsAvailable
 
 	roomsAvailable, er := service.BookingService.RoomsAvailable(bookingDTO)

@@ -20,7 +20,7 @@ type bookingServiceInterface interface {
 
 var (
 	BookingService bookingServiceInterface
-	layout = "02/01/2006"
+	layout         = "02/01/2006"
 )
 
 func init() {
@@ -58,7 +58,7 @@ func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 		bookingDto.Duration = booking.Duration
 		bookingDto.Price = booking.Price
 
-		bookingsDto.Bookings= append(bookingsDto.Bookings, bookingDto)
+		bookingsDto.Bookings = append(bookingsDto.Bookings, bookingDto)
 	}
 
 	return bookingsDto, nil
@@ -86,11 +86,10 @@ func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAva
 	hotelID := bookingDto.HotelId
 	DateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
 	DateTo, _ := time.Parse(layout, bookingDto.DateTo)
-	var bookings = bookingDAO.GetBookingByHotelAndDates(hotelID, DateFrom, DateTo)
-
+	bookings := bookingDAO.GetBookingByHotelAndDates(hotelID, DateFrom, DateTo)
 	var roomsAvailable dto.RoomsAvailable
-	hotel_rooms := hotelDAO.GetHotelById(hotelID).Availability
+	hotel_rooms := hotelDAO.GetHotelById(hotelID).Rooms
+	//el error esta en hotel_rooms
 	roomsAvailable.Rooms = hotel_rooms - bookings
-
 	return roomsAvailable, nil
 }

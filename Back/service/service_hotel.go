@@ -51,7 +51,7 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 		dtoBooking.HotelId = booking.HotelId
 
 		hotelDto.BookingsDto = append(hotelDto.BookingsDto, dtoBooking)
-	}*/
+	}
 
 	for _, amenitie := range hotel.Amenities {
 		var dtoAmenitie dto.AmenitieDto
@@ -60,7 +60,7 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 		dtoAmenitie.Description = amenitie.Description
 
 		hotelDto.AmenitiesDto = append(hotelDto.AmenitiesDto, &dtoAmenitie)
-	}
+	}*/
 
 	return hotelDto, nil
 }

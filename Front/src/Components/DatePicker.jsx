@@ -15,13 +15,16 @@ const DatePicker = () => {
       const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
       const hotelsData = await hotelsResponse.json();
       setHotel(hotelsData);
+      //console.log(hotelsData) este me funciona bien
   
       // Realizar la solicitud de disponibilidad para cada hotel
+      //el error esta aca
       for (const hotel of hotelsData) {
         const hotelID = hotel.id;
-        const availabilityResponse = await fetch(`${BASE_URL}/booking/availability/${hotelID}/dates?date_from=${startDate}&date_to=${endDate}`);
+        const availabilityResponse = await fetch(`${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`);
         const availabilityData = await availabilityResponse.json();
   
+        console.log(availabilityData)
         // Actualizar el estado de disponibilidad para cada hotel
         // Puedes utilizar un objeto o una matriz para almacenar los datos de disponibilidad de cada hotel
         // Aquí se utiliza un objeto con el ID del hotel como clave
