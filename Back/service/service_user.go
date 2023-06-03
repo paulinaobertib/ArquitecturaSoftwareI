@@ -48,17 +48,18 @@ func (u *userService) GetUserById(id int) (dto.UserDto, e.ApiError) {
 	userDto.Rol = user.Rol
 	userDto.State = user.State
 
+	/*
 	for _, booking := range user.Bookings {
 		var dtoBooking dto.BookingDto
 
-		dtoBooking.DateFrom = booking.DateFrom
-		dtoBooking.DateTo = booking.DateTo
+		dtoBooking.DateFrom = booking.DateFrom.Format(layout)
+		dtoBooking.DateTo = booking.DateTo.Format(layout)
 		dtoBooking.Duration = booking.Duration
 		dtoBooking.Price = booking.Price
 		dtoBooking.HotelId = booking.HotelId
 
 		userDto.BookingsDto = append(userDto.BookingsDto, dtoBooking)
-	}
+	}*/
 
 	return userDto, nil
 }

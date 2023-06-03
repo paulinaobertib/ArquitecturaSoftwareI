@@ -37,6 +37,7 @@ func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) 
 	amenitieDto.Name = amenitie.Name
 	amenitieDto.Description = amenitie.Description
 
+	/*
 	for _, hotel := range amenitie.Hotels{
 		var dtoHotel dto.HotelDto
 
@@ -48,7 +49,7 @@ func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) 
 		dtoHotel.Rooms = hotel.Rooms
 
 		amenitieDto.HotelsDto = append(amenitieDto.HotelsDto, &dtoHotel)
-	}
+	}*/
 
 	return amenitieDto, nil
 }

@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import "./../Home/home.css";
+import { BASE_URL } from "../configs";
 
 const DatePicker = () => {
+
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [hotel, setHotel] = useState([]);
+  const [hotelAvailability, setHotelAvailability] = useState([]);
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/booking`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ date_from, dato_to }),
-      });
-
-      if (response.ok) {
-        console.log('Fechas enviadas al backend correctamente');
-      } else {
-        console.error('Error al enviar las fechas al backend');
+      // Obtener todos los hoteles
+      const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
+      const hotelsData = await hotelsResponse.json();
+      setHotel(hotelsData);
+      //console.log(hotelsData) este me funciona bien
+  
+      // Realizar la solicitud de disponibilidad para cada hotel
+      //el error esta aca
+      for (const hotel of hotelsData) {
+        const hotelID = hotel.id;
+        const availabilityResponse = await fetch(`${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`);
+        const availabilityData = await availabilityResponse.json();
+  
+        console.log(availabilityData)
+        // Actualizar el estado de disponibilidad para cada hotel
+        // Puedes utilizar un objeto o una matriz para almacenar los datos de disponibilidad de cada hotel
+        // Aquí se utiliza un objeto con el ID del hotel como clave
+        setHotelAvailability(prevAvailability => ({
+          ...prevAvailability,
+          [hotelID]: availabilityData
+        }));
       }
     } catch (error) {
-      console.error('Error al enviar las fechas al backend:', error);
+      console.error('Error al obtener los hoteles o la disponibilidad:', error);
     }
   };
 
@@ -32,16 +45,16 @@ const DatePicker = () => {
     const startOptions = {
       format: 'yyyy-mm-dd',
       autoClose: true,
-      onSelect: function (date) {
-        setStartDate(date);
+      onSelect: function (startDate) {
+        setStartDate(startDate);
       }
     };
 
     const endOptions = {
       format: 'yyyy-mm-dd',
       autoClose: true,
-      onSelect: function (date) {
-        setEndDate(date);
+      onSelect: function (endDate) {
+        setEndDate(endDate);
       }
     };
 
@@ -67,6 +80,14 @@ const DatePicker = () => {
         </section>
       </section>
       <button onClick={handleSubmit} className="dateButton">Enviar fechas</button>
+      <div className='SeccionHoteles'>
+        <h2>Hoteles en las fechas seleccionadas</h2>
+        <div className='HotelCard'>
+          {
+            hotelAvailability?.length ? hotelAvailability.map((hotel) => <Card key={hotelAvailability.id} name={hotelAvailability.name} image={hotelAvailability.image} id={hotelAvailability.id}/>): null
+          }
+        </div>
+      </div>
     </div>
   );
 };

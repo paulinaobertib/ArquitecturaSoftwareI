@@ -41,12 +41,6 @@ export function Register() {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
-        confirmButton: {
-          text: "Aceptar",
-          onClick: () => {
-            window.location.href = "/login";
-          },
-        },
       });
     } else {
       Swal.fire({

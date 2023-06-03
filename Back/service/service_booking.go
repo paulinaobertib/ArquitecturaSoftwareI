@@ -2,10 +2,11 @@ package service
 
 import (
 	bookingDAO "booking-api/dao/booking"
-
+	hotelDAO "booking-api/dao/hotel"
 	"booking-api/dto"
 	"booking-api/model"
 	e "booking-api/utils/errors"
+	"time"
 )
 
 type bookingService struct{}
@@ -14,10 +15,12 @@ type bookingServiceInterface interface {
 	GetBookingById(id int) (dto.BookingDto, e.ApiError)
 	GetBookings() (dto.BookingsDto, e.ApiError)
 	InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError)
+	RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError)
 }
 
 var (
 	BookingService bookingServiceInterface
+	layout         = "02/01/2006"
 )
 
 func init() {
@@ -33,8 +36,8 @@ func (b *bookingService) GetBookingById(id int) (dto.BookingDto, e.ApiError) {
 		return bookingDto, e.NewBadRequestApiError("No se ha encontrado la reserva")
 	}
 	bookingDto.Id = booking.Id
-	bookingDto.DateFrom = booking.DateFrom
-	bookingDto.DateTo = booking.DateTo
+	bookingDto.DateFrom = booking.DateFrom.Format(layout)
+	bookingDto.DateTo = booking.DateTo.Format(layout)
 	bookingDto.Duration = booking.Duration
 	bookingDto.Price = booking.Price
 
@@ -50,12 +53,12 @@ func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 		var bookingDto dto.BookingDto
 
 		bookingDto.Id = booking.Id
-		bookingDto.DateFrom = booking.DateFrom
-		bookingDto.DateTo = booking.DateTo
+		bookingDto.DateFrom = booking.DateFrom.Format(layout)
+		bookingDto.DateTo = booking.DateTo.Format(layout)
 		bookingDto.Duration = booking.Duration
 		bookingDto.Price = booking.Price
 
-		bookingsDto = append(bookingsDto, bookingDto)
+		bookingsDto.Bookings = append(bookingsDto.Bookings, bookingDto)
 	}
 
 	return bookingsDto, nil
@@ -66,8 +69,8 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 	var booking model.Booking
 
 	bookingDto.Id = booking.Id
-	bookingDto.DateFrom = booking.DateFrom
-	bookingDto.DateTo = booking.DateTo
+	bookingDto.DateFrom = booking.DateFrom.Format(layout)
+	bookingDto.DateTo = booking.DateTo.Format(layout)
 	bookingDto.Duration = booking.Duration
 	bookingDto.Price = booking.Price
 
@@ -76,4 +79,17 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 	bookingDto.Id = booking.Id
 
 	return bookingDto, nil
+}
+
+func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError) {
+
+	hotelID := bookingDto.HotelId
+	DateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
+	DateTo, _ := time.Parse(layout, bookingDto.DateTo)
+	bookings := bookingDAO.GetBookingByHotelAndDates(hotelID, DateFrom, DateTo)
+	var roomsAvailable dto.RoomsAvailable
+	hotel_rooms := hotelDAO.GetHotelById(hotelID).Rooms
+	//el error esta en hotel_rooms
+	roomsAvailable.Rooms = hotel_rooms - bookings
+	return roomsAvailable, nil
 }

@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { waait } from "../Components/helper";
 
 export function Login() {
   const [userName, setUserName] = useState();
@@ -11,14 +12,29 @@ export function Login() {
   const navigate = useNavigate();
 
   const onLogin = async () => {
-    const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
-    if (isLoggedIn) {
-      navigate("/home");
-    } else {
+    if (!userName || !password) {
       Swal.fire({
-        text: `Usuario o Contraseña incorrecta`,
-        icon: "warning",
-      })
+        title: "Error",
+        text: "Por favor, ingresa el usuario y la contraseña",
+        icon: "error",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+      });
+      return;
+    }
+
+    const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
+
+    if (isLoggedIn) {
+      await waait();
+      Swal.fire({
+        text: `Bienvenido ${userName}`,
+        icon: "success",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+      });
     }
   };
 
@@ -50,7 +66,7 @@ export function Login() {
       <Button variant="contained" onClick={onLogin}>
         Login
       </Button>
-      
+
       <Button variant="contained" onClick={onRegisterClick}>
         ¿Todavía no te registraste?
       </Button>
