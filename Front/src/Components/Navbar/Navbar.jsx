@@ -19,16 +19,29 @@ const Navbar = () => {
     }
   };
 
-  return (
-    <nav>
-      <button onClick={() => navigate(-1)}>Volver</button>
-      <Link to="/">Home</Link>
-      {!user && <Link to="/login">Iniciar Sesion</Link>}
-      {!user && <Link to="/register">Registrarse</Link>}
-      {user && <button onClick={handleLogout}>Cerrar Sesion</button>}
-      {user && <Link to="/perfil">Perfil</Link>}
-    </nav>
-  );
+  if (user && user.rol === false) {
+    return (
+      <nav>
+        <button onClick={() => navigate(-1)}>Volver</button>
+        <Link to="/">Home</Link>
+        {!user && <Link to="/login">Iniciar Sesion</Link>}
+        {!user && <Link to="/register">Registrarse</Link>}
+        {user && <button onClick={handleLogout}>Cerrar Sesion</button>}
+        {user && <Link to="/perfil">Perfil</Link>}
+      </nav>
+    );
+  } else {
+    return (
+      <nav>
+        <button onClick={() => navigate(-1)}>Volver</button>
+        {user && <button onClick={handleLogout}>Cerrar Sesion</button>}
+        <Link to="/home">Home</Link>
+        {!user && <Link to="/login">Iniciar Sesion</Link>}
+        {!user && <Link to="/register">Registrarse</Link>}
+        {user && <Link to="/admin">Modo Administrador</Link>}
+      </nav>
+    );
+  }
 };
 
 export default Navbar;

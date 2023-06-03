@@ -49,7 +49,7 @@ const AuthContextProvider = ({ children }) => {
     const response = await fetch(`${BASE_URL}/user/email/${email}`);
     const data = await response.json();
 
-    if (data.email === email) {
+    if (data.email === email || data.userName === userName) {
       return false;
     }
 

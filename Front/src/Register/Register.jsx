@@ -47,13 +47,13 @@ export function Register() {
     })} else {
       Swal.fire({
         title: "👀",
-        text: "No has ingresado todos los valores o tu mail ya se encuentra registrado",
+        text: "No has ingresado todos los valores o tu mail o tu usuario ya se encuentra registrado",
         icon: "error",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
       }).then(() => {
-        navigate("/Login");
+        navigate("");
       });
     }
   };

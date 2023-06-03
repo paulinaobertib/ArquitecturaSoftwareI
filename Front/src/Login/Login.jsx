@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import { waait } from "../Components/helper";
 
 export function Login() {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState();
+  const [password, setPassword] = useState();
   const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export function Login() {
       return;
     }
 
-    const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
+const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
 
     if (isLoggedIn) {
       await waait();
@@ -36,8 +36,7 @@ export function Login() {
         },
       }).then(() => {
         navigate("/");
-      });
-    } else {
+      })} else {
       Swal.fire({
         text: `Usuario o Contraseña incorrecta`,
         icon: "warning",
