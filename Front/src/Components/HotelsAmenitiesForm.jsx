@@ -1,136 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
+import React, { useEffect, useState } from "react";
+import { FormControlLabel, Checkbox, MenuItem, Button, TextField } from "@mui/material";
 import { BASE_URL } from "../configs";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 
-const HotelsAmenitiesForm = () => {
-  const [hotels, setHotels] = useState([]);
-  const [amenities, setAmenities] = useState([]);
-  const [selectedHotel, setSelectedHotel] = useState('');
-  const [selectedAmenities, setSelectedAmenities] = useState({});
+const HotelForm = () => {
+  const [hotels, setHotels] = useState({});
+  const [amenities, setAmenities] = useState({});
+  const [selectedHotel, setSelectedHotel] = useState("");
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   useEffect(() => {
-    fetchHotels();
-    fetchAmenities();
+    // Obtener lista de hoteles
+    fetch(`${BASE_URL}/hotels`)
+      .then((response) => response.json())
+      .then((data) => setHotels(data))
+      .catch((error) => console.error(error));
+
+    // Obtener lista de amenities
+    fetch(`${BASE_URL}/amenities`)
+      .then((response) => response.json())
+      .then((data) => setAmenities(data))
+      .catch((error) => console.error(error));
   }, []);
 
-  const fetchHotels = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/hotels`);
-      const data = await response.json();
-      setHotels(data);
-    } catch (error) {
-      console.error('Error al obtener los hoteles:', error);
-    }
-  };
-
-  const fetchAmenities = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/amenities`);
-      const data = await response.json();
-      setAmenities(data);
-    } catch (error) {
-      console.error('Error al obtener las amenidades:', error);
-    }
-  };
+  //console.log("HOTELES", hotels);
+  //console.log("AMENITIES", amenities);
 
   const handleHotelChange = (event) => {
     setSelectedHotel(event.target.value);
   };
 
-  const handleAmenityChange = (amenityId) => {
-    setSelectedAmenities((prevAmenities) => ({
-      ...prevAmenities,
-      [amenityId]: !prevAmenities[amenityId]
-    }));
+  const handleAmenityChange = (event) => {
+    const amenityId = event.target.value;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedAmenities((prevSelectedAmenities) => [
+        ...prevSelectedAmenities,
+        amenityId,
+      ]);
+    } else {
+      setSelectedAmenities((prevSelectedAmenities) =>
+        prevSelectedAmenities.filter((id) => id !== amenityId)
+      );
+    }
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    try {
-      const promises = Object.entries(selectedAmenities).map(([amenityId, checked]) => {
-        if (checked) {
-          return fetch(`${BASE_URL}/hotel/${selectedHotel}/add-amenitie/${amenityId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-        }
-        return null;
-      });
+    // Realizar la solicitud PUT al backend con los datos seleccionados
+    const hotelId = selectedHotel;
+    const selectedAmenitiesIds = selectedAmenities;
 
-      await Promise.all(promises.filter(promise => promise !== null));
-
-      Swal.fire({
-        text: 'Amenidades agregadas al hotel con éxito',
-        icon: 'success',
-        showClass: {
-          popup: 'animate__animated animate__fadeInDown',
-        },
-      });
-    } catch (error) {
-      console.error('Error al agregar las amenidades al hotel:', error);
-      Swal.fire({
-        text: 'Error al agregar las amenidades al hotel',
-        icon: 'error',
-        showClass: {
-          popup: 'animate__animated animate__fadeInDown',
-        },
-      });
-    }
+    fetch(`${BASE_URL}/hotel/${hotelId}/add-amenitie/${selectedAmenitiesIds}`, {
+      method: "PUT",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Aquí puedes manejar la respuesta del backend después de guardar los datos
+        console.log(data);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="hotel-select">Selecciona un hotel:</label>
-        <Select
-          id="hotel-select"
-          value={selectedHotel}
-          onChange={handleHotelChange}
-          displayEmpty
-        >
-          <MenuItem value="">
-            <em>Seleccione</em>
-          </MenuItem>
-          {hotels.map((hotel) => (
-            <MenuItem key={hotel.id} value={hotel.id}>
+        <label htmlFor="hotel-select">Seleccione un hotel:</label>
+        <select id="hotel-select" value={selectedHotel} onChange={handleHotelChange}>
+          {Object.entries(hotels).map(([hotelId, hotel]) => (
+            <option key={hotelId} value={hotelId}>
               {hotel.name}
-            </MenuItem>
+            </option>
           ))}
-        </Select>
+        </select>
       </div>
       <div>
-        <label>Amenidades:</label>
-        <List>
-          {amenities.map((amenity) => (
-            <ListItem key={amenity.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedAmenities[amenity.id] || false}
-                    onChange={() => handleAmenityChange(amenity.id)}
-                  />
-                }
-                label={amenity.name}
+        <p>Seleccione las comodidades:</p>
+        {Object.entries(amenities).map(([amenityId, amenity]) => (
+          <FormControlLabel
+            key={amenityId}
+            control={
+              <Checkbox
+                checked={selectedAmenities.includes(amenityId)}
+                onChange={handleAmenityChange}
+                value={amenityId}
               />
-            </ListItem>
-          ))}
-        </List>
+            }
+            label={amenity.name}
+          />
+        ))}
       </div>
-      <Button variant="contained" color="primary" type="submit">
-        Agregar Amenidades al Hotel
+      <Button type="submit" variant="contained" color="primary">
+        Guardar
       </Button>
     </form>
   );
 };
 
-export default HotelsAmenitiesForm;
+export default HotelForm;
+
+
+
