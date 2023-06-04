@@ -9,15 +9,18 @@ const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
-  const fetchCurrentUser = async () => {
-    if (user && user.id) {
-      const response = await fetch(`${BASE_URL}/user/${user.id}`);
+  const getUser = async (userId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/user/${userId}`);
       if (response.ok) {
-        const data = await response.json();
-        return data;
+        const userData = await response.json();
+        return userData;
       } else {
-        setUser(null);
+        throw new Error("Error al obtener los detalles del usuario");
       }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error al obtener los detalles del usuario");
     }
   };
 
@@ -86,7 +89,7 @@ const AuthContextProvider = ({ children }) => {
     handleLogin,
     logOut,
     handleRegister,
-    fetchCurrentUser,
+    getUser,
   };
 
   return (

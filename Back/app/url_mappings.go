@@ -32,7 +32,7 @@ func mapUrls() {
 	router.GET("/amenitie/:id", amenitieController.GetAmenitieById)
 	router.GET("/amenities", amenitieController.GetAmenities)
 	router.POST("/amenitie", amenitieController.AmenitieInsert)
-	router.GET ("/amenities/hotel/:id", amenitieController.GetAmenitiesByHotelId)
+	router.GET("/amenities/hotel/:id", amenitieController.GetAmenitiesByHotelId)
 
 	log.Info("Finishing mappings configurations")
 }
