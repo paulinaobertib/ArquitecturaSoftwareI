@@ -16,6 +16,7 @@ type bookingServiceInterface interface {
 	GetBookings() (dto.BookingsDto, e.ApiError)
 	InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError)
 	RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError)
+	GetBookingsByUserId(userId int) ([]dto.BookingsDto, e.ApiError)
 }
 
 var (
@@ -91,8 +92,33 @@ func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAva
 
 	roomsAvailable := dto.RoomsAvailable{
 		//HotelID: hotelID,
-		Rooms:   hotel.Rooms - bookings,
+		Rooms: hotel.Rooms - bookings,
 	}
 
 	return roomsAvailable, nil
+}
+
+func (b *bookingService) GetBookingsByUserId(userId int) ([]dto.BookingsDto, e.ApiError) {
+	bookings, err := bookingDAO.GetBookingsByUserId(userId)
+	if err != nil {
+		return nil, e.NewBadRequestApiError("No se han encontrado las reservas")
+	}
+
+	bookingsList := make([]dto.BookingDto, 0)
+
+	for _, booking := range bookings {
+		var bookingDto dto.BookingDto
+		bookingDto.Id = booking.Id
+		bookingDto.DateFrom = booking.DateFrom.Format(layout)
+		bookingDto.DateTo = booking.DateTo.Format(layout)
+		bookingDto.Duration = booking.Duration
+		bookingDto.Price = booking.Price
+		bookingsList = append(bookingsList, bookingDto)
+	}
+
+	return []dto.BookingsDto{
+		{
+			Bookings: bookingsList,
+		},
+	}, nil
 }

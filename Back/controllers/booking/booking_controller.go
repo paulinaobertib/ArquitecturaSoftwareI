@@ -78,3 +78,18 @@ func RoomsAvailable(c *gin.Context) {
 
 	c.JSON(http.StatusOK, roomsAvailable)
 }
+
+func GetBookingsByUserId(c *gin.Context) {
+    log.Debug("User id to load: " + c.Param("id"))
+
+    userId, _ := strconv.Atoi(c.Param("id"))
+    
+    bookingsDto, err := service.BookingService.GetBookingsByUserId(userId)
+
+    if err != nil {
+        c.JSON(err.Status(), err)
+        return
+    }
+
+    c.JSON(http.StatusOK, bookingsDto)
+}

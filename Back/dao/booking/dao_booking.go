@@ -44,3 +44,15 @@ func GetBookingByHotelAndDates(Id int, DateFrom time.Time, DateTo time.Time) int
 	Db.Model(&model.Booking{}).Where("id = ? AND ? < date_to AND ? >= date_from", Id, DateFrom, DateTo).Preload("Hotel").Preload("User").Count(&count)
 	return count
 }
+
+
+func GetBookingsByUserId(userId int) ([]model.Booking, error) {
+	var bookings []model.Booking
+
+	err := Db.Model(&model.Booking{}).Where("user_id = ?", userId).Find(&bookings).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return bookings, nil
+}
