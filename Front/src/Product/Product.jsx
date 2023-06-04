@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { BASE_URL } from "../configs";
 import "./product.css";
 import { AuthContext } from "../Providers/AuthContextProvider";
+import React from "react";
 
 const BOOKING_URL = `${BASE_URL}/booking`;
 
@@ -23,21 +24,20 @@ const Product = () => {
     if (hotel && hotel.id) {
       const response = await fetch(`${BASE_URL}/amenities/hotel/${hotel.id}`);
       const resolve = await response.json();
-      setAmenities(resolve);
+      setAmenities(resolve.amenities);
     }
   };
 
   useEffect(() => {
     getHotel();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getAmenities();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotel]);
 
-  console.log(amenities);
+  //console.log(amenities);
+  //console.log("ACAA mirame", Object.keys(amenities).length);
 
   const createBooking = async () => {
     const NewBooking = {
@@ -81,16 +81,7 @@ const Product = () => {
           )}
         </div>
       </div>
-      <div className="Amenities">
-        {amenities && Object.keys(amenities).length ? (
-          <>
-            <p>Nombre: {amenities.name}</p>
-            <p>Descripción: {amenities.description}</p>
-          </>
-        ) : (
-          <p>No hay amenities disponibles</p>
-        )}
-      </div>
+      <h5>Amenities</h5>
     </div>
   );
 };
