@@ -8,10 +8,11 @@ type Booking struct {
 	Id       int       `gorm:"primaryKey"`
 	DateFrom time.Time `gorm:"type:date;not null"`
 	DateTo   time.Time `gorm:"type:date;not null"`
-	Duration int       `gorm:"type:integer;not null"`
-	Price    float64   `gorm:"type:double; not null"`
 
-	UserId  int
+	User   User `gorm:"foreingkey:UserId"`
+	UserId int
+
+	Hotel   Hotel `gorm:"foreingkey:HotelId"`
 	HotelId int
 }
 

@@ -16,12 +16,12 @@ type bookingServiceInterface interface {
 	GetBookings() (dto.BookingsDto, e.ApiError)
 	InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError)
 	RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError)
-	GetBookingsByUserId(userId int) ([]dto.BookingsDto, e.ApiError)
+	GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError)
 }
 
 var (
 	BookingService bookingServiceInterface
-	layout         = "02/01/2006"
+	layout         = "12/05/2003"
 )
 
 func init() {
@@ -39,16 +39,17 @@ func (b *bookingService) GetBookingById(id int) (dto.BookingDto, e.ApiError) {
 	bookingDto.Id = booking.Id
 	bookingDto.DateFrom = booking.DateFrom.Format(layout)
 	bookingDto.DateTo = booking.DateTo.Format(layout)
-	bookingDto.Duration = booking.Duration
-	bookingDto.Price = booking.Price
+	bookingDto.UserId = booking.UserId
+	bookingDto.HotelId = booking.HotelId
 
 	return bookingDto, nil
 }
 
 func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 
-	var bookings model.Bookings = bookingDAO.GetBookings()
+	var bookings = bookingDAO.GetBookings()
 	var bookingsDto dto.BookingsDto
+	bookingsDto.Bookings = []dto.BookingDto{}
 
 	for _, booking := range bookings {
 		var bookingDto dto.BookingDto
@@ -56,8 +57,8 @@ func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 		bookingDto.Id = booking.Id
 		bookingDto.DateFrom = booking.DateFrom.Format(layout)
 		bookingDto.DateTo = booking.DateTo.Format(layout)
-		bookingDto.Duration = booking.Duration
-		bookingDto.Price = booking.Price
+		bookingDto.UserId = booking.UserId
+		bookingDto.HotelId = booking.HotelId
 
 		bookingsDto.Bookings = append(bookingsDto.Bookings, bookingDto)
 	}
@@ -69,21 +70,17 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 
 	var booking model.Booking
 
-	layout := "2006-01-02" // Formato de fecha deseado
-	dateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
-
-	dateTo, _ := time.Parse(layout, bookingDto.DateTo)
-
-	booking.DateFrom = dateFrom
-	booking.DateTo = dateTo
-	booking.Duration = bookingDto.Duration
-	booking.Price = bookingDto.Price
 	booking.UserId = bookingDto.UserId
 	booking.HotelId = bookingDto.HotelId
 
+	parsedTime, _ := time.Parse(layout, bookingDto.DateFrom)
+	booking.DateFrom = parsedTime
+	parsedTime, _ = time.Parse(layout, bookingDto.DateTo)
+	booking.DateTo = parsedTime
+
 	booking = bookingDAO.InsertBooking(booking)
 
-	bookingDto.Id = booking.Id
+	bookingDto, _ = b.GetBookingById(booking.Id)
 
 	return bookingDto, nil
 }
@@ -104,27 +101,21 @@ func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAva
 	return roomsAvailable, nil
 }
 
-func (b *bookingService) GetBookingsByUserId(userId int) ([]dto.BookingsDto, e.ApiError) {
-	bookings, err := bookingDAO.GetBookingsByUserId(userId)
-	if err != nil {
-		return nil, e.NewBadRequestApiError("No se han encontrado las reservas")
-	}
+func (b *bookingService) GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError) {
 
-	bookingsList := make([]dto.BookingDto, 0)
+	var bookings = bookingDAO.GetBookingsByUserId(id)
+	var bookingsDto dto.BookingsDto
+	bookingsDto.Bookings = []dto.BookingDto{}
 
 	for _, booking := range bookings {
 		var bookingDto dto.BookingDto
 		bookingDto.Id = booking.Id
+		bookingDto.HotelId = booking.Hotel.Id
 		bookingDto.DateFrom = booking.DateFrom.Format(layout)
 		bookingDto.DateTo = booking.DateTo.Format(layout)
-		bookingDto.Duration = booking.Duration
-		bookingDto.Price = booking.Price
-		bookingsList = append(bookingsList, bookingDto)
+
+		bookingsDto.Bookings = append(bookingsDto.Bookings, bookingDto)
 	}
 
-	return []dto.BookingsDto{
-		{
-			Bookings: bookingsList,
-		},
-	}, nil
+	return bookingsDto, nil
 }

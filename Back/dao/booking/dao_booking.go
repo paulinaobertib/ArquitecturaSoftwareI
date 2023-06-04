@@ -3,9 +3,10 @@ package dao
 import (
 	"booking-api/model"
 
+	"time"
+
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 var Db *gorm.DB
@@ -13,7 +14,7 @@ var Db *gorm.DB
 func GetBookingById(id int) model.Booking {
 	var booking model.Booking
 
-	Db.Where("id = ?", id).First(&booking)
+	Db.Where("id = ?", id).Preload("Hotel").Preload("User").First(&booking)
 	log.Debug("Booking: ", booking)
 
 	return booking
@@ -21,7 +22,7 @@ func GetBookingById(id int) model.Booking {
 
 func GetBookings() model.Bookings {
 	var bookings model.Bookings
-	Db.Find(&bookings)
+	Db.Preload("Hotel").Preload("User").Find(&bookings)
 
 	log.Debug("Bookings: ", bookings)
 
@@ -41,18 +42,16 @@ func InsertBooking(booking model.Booking) model.Booking {
 // metodo que me cuenta la cantidad reservas que hay de ese hotel en una fecha
 func GetBookingByHotelAndDates(Id int, DateFrom time.Time, DateTo time.Time) int {
 	var count int
+
 	Db.Model(&model.Booking{}).Where("id = ? AND ? < date_to AND ? >= date_from", Id, DateFrom, DateTo).Preload("Hotel").Preload("User").Count(&count)
+
 	return count
 }
 
+func GetBookingsByUserId(userId int) model.Bookings {
+	var bookings model.Bookings
 
-func GetBookingsByUserId(userId int) ([]model.Booking, error) {
-	var bookings []model.Booking
+	Db.Where("user_id = ?", userId).Preload("Hotel").Preload("User").Find(&bookings)
 
-	err := Db.Model(&model.Booking{}).Where("user_id = ?", userId).Find(&bookings).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return bookings, nil
+	return bookings
 }
