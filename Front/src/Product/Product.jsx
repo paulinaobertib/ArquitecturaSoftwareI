@@ -82,6 +82,18 @@ const Product = () => {
         </div>
       </div>
       <h5>Amenities</h5>
+      <div className="Amenities">
+        {amenities?.length ? (
+            amenities.map((amenitie) => (
+              <React.Fragment key={amenitie.id}>
+              <p>Nombre: {amenitie.name}</p>
+              <p>Descripcion: {amenitie.description}</p>
+              </React.Fragment>
+            ))
+          ) : (
+            <p>El hotel no tiene amenities</p>
+          )}
+      </div>
     </div>
   );
 };
