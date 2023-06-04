@@ -69,11 +69,18 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 
 	var booking model.Booking
 
-	bookingDto.Id = booking.Id
-	bookingDto.DateFrom = booking.DateFrom.Format(layout)
-	bookingDto.DateTo = booking.DateTo.Format(layout)
-	bookingDto.Duration = booking.Duration
-	bookingDto.Price = booking.Price
+	layout := "2006-01-02" // Formato de fecha deseado
+	dateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
+
+	dateTo, _ := time.Parse(layout, bookingDto.DateTo)
+
+	booking.Id = bookingDto.Id
+	booking.DateFrom = dateFrom
+	booking.DateTo = dateTo
+	booking.Duration = bookingDto.Duration
+	booking.Price = bookingDto.Price
+	booking.UserId = bookingDto.UserId
+	booking.HotelId = bookingDto.HotelId
 
 	booking = bookingDAO.InsertBooking(booking)
 

@@ -49,5 +49,10 @@ export const navigation = [
         id: 7,
         path: "/admin",
         Element: AdminUser,
-    }
+    },
+    {
+        id: 8,
+        path: "/hotel/:id/:startDate/:endDate",
+        Element: Product,
+    },
 ];

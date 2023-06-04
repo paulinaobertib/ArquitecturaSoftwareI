@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "./../Home/home.css";
 import { BASE_URL } from "../configs";
 import Card from "./Card";
+import { useNavigate } from "react-router-dom";
 
-const DatePicker = () => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+const DatePicker = ({ startDate, setStartDate, endDate, setEndDate }) => {
+  const navigate = useNavigate();
   const [hotels, setHotels] = useState([]);
   const [hotelsShow, setHotelsShow] = useState([]);
   const [hotelAvailability, setHotelAvailability] = useState({});
@@ -25,52 +25,52 @@ const DatePicker = () => {
           const hotelID = hotelA.id;
           //console.log("ACA ID", hotelID);
 
-          const availabilityResponse = await fetch(`${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`);
+          const availabilityResponse = await fetch(
+            `${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`
+          );
           const availabilityData = await availabilityResponse.json();
 
           if (availabilityData.rooms_available > 0) {
-            setHotelsShow(prevHotels => [...prevHotels, hotelA]);
+            setHotelsShow((prevHotels) => [...prevHotels, hotelA]);
             //console.log("si entro");
           } else {
             console.log("no hay");
           }
-          
-          setHotelAvailability(prevAvailability => ({
+
+          setHotelAvailability((prevAvailability) => ({
             ...prevAvailability,
-            [hotelID]: availabilityData
+            [hotelID]: availabilityData,
           }));
 
           //console.log("MIRA SI SIRVE", availabilityData);
         }
-
       }
 
       //console.log("MIRA MIRA", hotelsShow);
       //console.log("ACA VER IMP",Object.keys(hotelAvailability).length);
-
     } catch (error) {
-      console.error('Error al obtener los hoteles o la disponibilidad:', error);
+      console.error("Error al obtener los hoteles o la disponibilidad:", error);
     }
   };
 
   useEffect(() => {
-    const startPicker = document.querySelector('.start-datepicker');
-    const endPicker = document.querySelector('.end-datepicker');
+    const startPicker = document.querySelector(".start-datepicker");
+    const endPicker = document.querySelector(".end-datepicker");
 
     const startOptions = {
-      format: 'yyyy-mm-dd',
+      format: "yyyy-mm-dd",
       autoClose: true,
       onSelect: function (startDate) {
         setStartDate(startDate);
-      }
+      },
     };
 
     const endOptions = {
-      format: 'yyyy-mm-dd',
+      format: "yyyy-mm-dd",
       autoClose: true,
       onSelect: function (endDate) {
         setEndDate(endDate);
-      }
+      },
     };
 
     window.M.Datepicker.init(startPicker, startOptions);
@@ -87,28 +87,35 @@ const DatePicker = () => {
   //console.log("ACA MIRA", Object.values(hotelAvailability));
 
   return (
-    <div className='dateDiv'>
-      <section className='datePicker'>
-        <section className='datePickerSection'>
+    <div className="dateDiv">
+      <section className="datePicker">
+        <section className="datePickerSection">
           <label htmlFor="start-date">Fecha Desde</label>
           <input type="text" id="start-date" className="start-datepicker" />
         </section>
-        <section className='datePickerSection'>
+        <section className="datePickerSection">
           <label htmlFor="end-date">Fecha Hasta</label>
           <input type="text" id="end-date" className="end-datepicker" />
         </section>
       </section>
-      <button onClick={handleSubmit} className="dateButton">Enviar fechas</button>
-      <div className='SeccionHoteles'>
+      <button onClick={handleSubmit} className="dateButton">
+        Enviar fechas
+      </button>
+      <div className="SeccionHoteles">
         <h2>Hoteles en las fechas seleccionadas:</h2>
-        <div className='HotelCard'>
-        {hotelsShow.length ? (
-          hotelsShow.map((hotel) => (
-            <Card key={hotel.id} name={hotel.name} image={hotel.image} id={hotel.id} />
-          ))
-        ) : (
-          <p>No hay hoteles disponibles</p>
-        )}
+        <div className="HotelCard">
+          {hotelsShow.length ? (
+            hotelsShow.map((hotel) => (
+              <Card
+                key={hotel.id}
+                name={hotel.name}
+                image={hotel.image}
+                onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
+              />
+            ))
+          ) : (
+            <p>No hay hoteles disponibles</p>
+          )}
         </div>
       </div>
     </div>
@@ -116,4 +123,3 @@ const DatePicker = () => {
 };
 
 export default DatePicker;
-
