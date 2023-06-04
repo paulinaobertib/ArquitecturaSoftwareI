@@ -74,7 +74,6 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 
 	dateTo, _ := time.Parse(layout, bookingDto.DateTo)
 
-	booking.Id = bookingDto.Id
 	booking.DateFrom = dateFrom
 	booking.DateTo = dateTo
 	booking.Duration = bookingDto.Duration
