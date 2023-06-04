@@ -3,6 +3,7 @@ import { BASE_URL } from "../configs";
 import Swal from "sweetalert2";
 import Button from '@mui/material/Button';
 import HotelsAmenitiesForm from "./../Components/HotelsAmenitiesForm";
+import BookingsUsers from "./../Components/BookingsUsers";
 
 const AdminUser = () => {
 
@@ -274,6 +275,10 @@ const AdminUser = () => {
         />
       </label>
         <Button variant="contained" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button>
+        </div>
+        <div>
+          <h2>Reservas de los usuarios:</h2>
+          <BookingsUsers />
         </div>
     </div>
   );

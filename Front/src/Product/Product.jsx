@@ -4,6 +4,7 @@ import { BASE_URL } from "../configs";
 import "./product.css";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import React from "react";
+import Swal from "sweetalert2";
 
 const BOOKING_URL = `${BASE_URL}/booking`;
 
@@ -30,6 +31,15 @@ const Product = () => {
 
   useEffect(() => {
     getHotel();
+    if (user) {
+      Swal.fire({
+        text: 'Seleccione las fechas en la home',
+        icon: 'warning',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown',
+        },
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -56,7 +66,22 @@ const Product = () => {
     });
 
     if (!createBookingResponse.ok) {
-      throw new Error("Error al registrar el usuario");
+      Swal.fire({
+        text: 'Registro del booking no se ha podido realizar',
+        icon: 'error',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown',
+        },
+      });
+      throw new Error("Error al registrar el booking");
+    } else {
+      Swal.fire({
+        text: 'Registro del booking exitoso',
+        icon: 'success',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown',
+        },
+      });
     }
     const createdBooking = await createBookingResponse.json();
     console.log(createdBooking);
