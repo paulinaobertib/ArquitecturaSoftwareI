@@ -9,6 +9,7 @@ const Product = () => {
     const navigate = useNavigate();
 
     const [hotel, setHotel] = useState()
+    const [amenities, setAmenities] = useState([])
     const {id} = useParams()
     
     const infoHotel = `${BASE_URL}/hotel/${id}`;
@@ -19,8 +20,15 @@ const Product = () => {
         setHotel(resolve)
     }
 
+    const getAmenities = async () => {
+        const response = await fetch(`${BASE_URL}/amenities/hotel/${id}`);
+        const resolve = await response.json();
+        setAmenities(resolve)
+    }
+
     useEffect(() => {
         getHotel();
+        getAmenities();
     },[])
 
     return (
@@ -36,6 +44,9 @@ const Product = () => {
                     <p className='description'>{hotel?.description}</p>
                     <button className='bookingButton' onClick={ () => navigate("/booking")}>Reservar</button>
                 </div>
+            </div>
+            <div className='Amenities'>
+                <p>Amenities: {hotel?.amenities} </p>
             </div>
         </div>
     )

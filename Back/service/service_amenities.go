@@ -83,7 +83,7 @@ func (h *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, 
 		var amenitieDto dto.AmenitieDto
 		amenitieDto.Id = amenitie.Id
 		amenitieDto.Name = amenitie.Name
-
+		amenitieDto.Description = amenitie.Description
 		amenitiesList = append(amenitiesList, amenitieDto)
 	}
 
