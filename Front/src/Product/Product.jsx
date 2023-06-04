@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { BASE_URL } from "../configs";
 import "./product.css";
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from "../Providers/AuthContextProvider";
+
+const BOOKING_URL = `${BASE_URL}/booking`;
 
 const Product = () => {
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [hotel, setHotel] = useState(null);
   const [amenities, setAmenities] = useState([]);
-  const { id } = useParams();
+  const { id, startDate, endDate } = useParams();
   const infoHotel = `${BASE_URL}/hotel/${id}`;
 
   const getHotel = async () => {
@@ -27,37 +29,66 @@ const Product = () => {
 
   useEffect(() => {
     getHotel();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getAmenities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotel]);
 
-  console.log(amenities)
+  console.log(amenities);
+
+  const createBooking = async () => {
+    const NewBooking = {
+      user_id: user.id,
+      date_from: new Date(startDate),
+      date_to: new Date(endDate),
+      hotel_id: hotel.id,
+      
+    };
+    const createBookingResponse = await fetch(BOOKING_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(NewBooking),
+    });
+
+    if (!createBookingResponse.ok) {
+      throw new Error("Error al registrar el usuario");
+    }
+    const createdBooking = await createBookingResponse.json();
+    console.log(createdBooking);
+  };
 
   return (
-    <div className='detailsHotel'>
+    <div className="detailsHotel">
       <h1>Detalles del hotel seleccionado: </h1>
-      <div className='detailEach'>
-        <img src={hotel?.image} alt="hotel" />
-        <div className='details'>
+      <div className="detailEach">
+        <img className="hotelImage" src={hotel?.image} alt="hotel" />
+        <div className="details">
           <h3>{hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
           <p>Telefono: {hotel?.telephone}</p>
           <p>Email: {hotel?.email}</p>
           <p>Habitaciones disponibles: {hotel?.rooms}</p>
-          <p className='description'>{hotel?.description}</p>
-          <button className='bookingButton' onClick={() => navigate("/booking")}>Reservar</button>
+          <p className="description">{hotel?.description}</p>
+          {user && startDate && endDate && (
+            <button className="bookingButton" onClick={createBooking}>
+              Reservar
+            </button>
+          )}
         </div>
       </div>
-      <div className='Amenities'>
+      <div className="Amenities">
         {amenities && Object.keys(amenities).length ? (
-            <>
+          <>
             <p>Nombre: {amenities.name}</p>
             <p>Descripción: {amenities.description}</p>
-            </>
+          </>
         ) : (
-            <p>No hay amenities disponibles</p>
+          <p>No hay amenities disponibles</p>
         )}
       </div>
     </div>
