@@ -29,12 +29,18 @@ const AdminUser = () => {
           body: JSON.stringify(AmenitieData)
         })
         .then(response => {
-          console.log(response); // Agrega esta línea para verificar la respuesta
+          console.log(response);
           return response.json();
         })
         .then(data => {
           console.log('Amenidad agregada:', data);
-          // Realizar cualquier otra acción después de agregar la amenidad
+          Swal.fire({
+            text: `Amenitie registrada con exito`,
+            icon: "success",
+            showClass: {
+              popup: "animate__animated animate__fadeInDown",
+            },
+          })
         })
         .catch(error => {
           console.error('Error al agregar la amenidad:', error);
@@ -242,3 +248,8 @@ const AdminUser = () => {
 
 export default AdminUser;
 
+//modificar el codigo para que primero me deje registrar el hotel sin la amenitie
+//despues poner una lista de los hoteles para que elija uno, me agarre su id y con el put agregar amenitie
+//dejar el agregar amenitie nueva como esta que funciona bien
+//mostrar todas las reservas hechas por todos los usuarios
+//si esto sale, pide filtro por hotel y por dia ¿?

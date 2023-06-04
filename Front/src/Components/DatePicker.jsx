@@ -45,7 +45,7 @@ const DatePicker = () => {
 
       }
 
-      console.log("MIRA MIRA", hotelsShow);
+      //console.log("MIRA MIRA", hotelsShow);
       //console.log("ACA VER IMP",Object.keys(hotelAvailability).length);
 
     } catch (error) {
