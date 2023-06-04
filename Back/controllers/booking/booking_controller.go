@@ -5,6 +5,7 @@ import (
 	service "booking-api/service"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -47,6 +48,36 @@ func InsertBooking(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
+
+	// Parsear las fechas iniciales y finales
+	layout := "12/05/2003"
+	dateFrom, err := time.Parse(layout, bookingDto.DateFrom)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Fecha inicial inválida"})
+		return
+	}
+
+	dateTo, err := time.Parse(layout, bookingDto.DateTo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date To inválida"})
+		return
+	}
+
+	// Verificar si la fecha final es mayor que la fecha inicial
+	if dateTo.Before(dateFrom) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date To debe ser mayor que Date From"})
+		return
+	}
+
+	//Verificar que haya rooms disponibles
+	rooms_available, _ := service.BookingService.RoomsAvailable(bookingDto)
+	if rooms_available.Rooms <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No hay habitaciones disponibles."})
+		return
+	}
+
+	userID := c.GetInt("user_id")
+	bookingDto.UserId = userID
 
 	bookingDto, er := service.BookingService.InsertBooking(bookingDto) // llama a la funcion del service
 	// Error del Insert
