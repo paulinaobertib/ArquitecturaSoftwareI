@@ -1,29 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Checkbox, MenuItem, Button, TextField } from "@mui/material";
+import { FormControlLabel, Checkbox, MenuItem, Button, InputLabel, Select } from "@mui/material";
 import { BASE_URL } from "../configs";
+import Swal from "sweetalert2";
 
-const HotelForm = () => {
-  const [hotels, setHotels] = useState({});
-  const [amenities, setAmenities] = useState({});
+const HotelsAmenitiesForm = () => {
+  const [hotels, setHotels] = useState([]);
+  const [amenities, setAmenities] = useState([]);
   const [selectedHotel, setSelectedHotel] = useState("");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
 
+  const getHotels = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/hotels`);
+        const data = await response.json();
+        setHotels(data.hotels);
+    } catch (error) {
+        console.error('Error al obtener los hoteles:', error);
+        Swal.fire({
+            text: `Error al obtener los hoteles existentes`,
+            icon: "error",
+            showClass: {
+              popup: "animate__animated animate__fadeInDown",
+            },
+        })
+    }
+};
+
+const getAmenities = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/amenities`);
+        const data = await response.json();
+        setAmenities(data.amenities);
+    } catch (error) {
+        console.error('Error al obtener las amenities:', error);
+        Swal.fire({
+            text: `Error al obtener las amenities existentes`,
+            icon: "error",
+            showClass: {
+              popup: "animate__animated animate__fadeInDown",
+            },
+        })
+    }
+};
+
   useEffect(() => {
     // Obtener lista de hoteles
-    fetch(`${BASE_URL}/hotels`)
-      .then((response) => response.json())
-      .then((data) => setHotels(data))
-      .catch((error) => console.error(error));
+    getHotels();
 
     // Obtener lista de amenities
-    fetch(`${BASE_URL}/amenities`)
-      .then((response) => response.json())
-      .then((data) => setAmenities(data))
-      .catch((error) => console.error(error));
+    getAmenities();
   }, []);
 
-  //console.log("HOTELES", hotels);
-  //console.log("AMENITIES", amenities);
+  //console.log("HOTELES", typeof hotels);
+  //console.log("AMENITIES", typeof amenities);
 
   const handleHotelChange = (event) => {
     setSelectedHotel(event.target.value);
@@ -57,26 +86,43 @@ const HotelForm = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // Aquí puedes manejar la respuesta del backend después de guardar los datos
         console.log(data);
+        Swal.fire({
+            text: 'Registro de las amenities del hotel realizado con éxito',
+            icon: 'success',
+            showClass: {
+              popup: 'animate__animated animate__fadeInDown',
+            },
+          });
       })
       .catch((error) => console.error(error));
   };
 
+  //console.log(hotels);
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="hotel-select">Seleccione un hotel:</label>
-        <select id="hotel-select" value={selectedHotel} onChange={handleHotelChange}>
-          {Object.entries(hotels).map(([hotelId, hotel]) => (
-            <option key={hotelId} value={hotelId}>
+      <InputLabel id="hotel-select-label">Seleccione un hotel:</InputLabel>
+      {hotels?.length ? (
+        <Select
+          labelId="hotel-select-label"
+          id="hotel-select"
+          value={selectedHotel}
+          onChange={handleHotelChange}
+        >
+          {hotels.map((hotel) => (
+            <MenuItem key={hotel.id} value={hotel.id}>
               {hotel.name}
-            </option>
+            </MenuItem>
           ))}
-        </select>
+        </Select>
+      ) : (
+        <p>No hay hoteles disponibles</p>
+      )}
       </div>
       <div>
-        <p>Seleccione las comodidades:</p>
+        <p>Seleccione las amenities:</p>
         {Object.entries(amenities).map(([amenityId, amenity]) => (
           <FormControlLabel
             key={amenityId}
@@ -98,7 +144,7 @@ const HotelForm = () => {
   );
 };
 
-export default HotelForm;
+export default HotelsAmenitiesForm;
 
 
 

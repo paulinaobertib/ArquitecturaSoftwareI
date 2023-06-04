@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Card from "./Card";
 import "./../Home/home.css";
 import { BASE_URL } from "../configs";
+import Swal from "sweetalert2";
 
 const infoHotel = `${BASE_URL}/hotels`;
 
@@ -15,6 +16,13 @@ const Hotels = () => {
             setHotels(data.hotels);
         } catch (error) {
             console.error('Error al obtener los hoteles:', error);
+            Swal.fire({
+                text: `Error al obtener los hoteles existentes`,
+                icon: "error",
+                showClass: {
+                  popup: "animate__animated animate__fadeInDown",
+                },
+            })
         }
     };
 

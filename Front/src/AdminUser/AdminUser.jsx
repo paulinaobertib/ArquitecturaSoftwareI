@@ -250,7 +250,7 @@ const AdminUser = () => {
     </form>
       </div>
       <div>
-      <h2>Registrar la amenitie del hotel:</h2>
+      <h2>Registrar las amenities del hotel:</h2>
       <HotelsAmenitiesForm />
       </div>
       <div>
