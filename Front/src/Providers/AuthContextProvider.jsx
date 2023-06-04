@@ -1,4 +1,4 @@
-import { createContext, useState} from "react";
+import { createContext, useState } from "react";
 import PropTypes from "prop-types";
 import { BASE_URL } from "../configs";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +11,28 @@ const AuthContextProvider = ({ children }) => {
 
   const getUser = async (userId) => {
     try {
-      const response = await fetch(`${BASE_URL}/user/${userId}`);
-      if (response.ok) {
-        const userData = await response.json();
-        return userData;
+      const [userResponse, bookingsResponse] = await Promise.all([
+        fetch(`${BASE_URL}/user/${userId}`),
+        fetch(`${BASE_URL}/bookings/user/${userId}`),
+      ]);
+
+      if (userResponse.ok && bookingsResponse.ok) {
+        const [userData, bookingsData] = await Promise.all([
+          userResponse.json(),
+          bookingsResponse.json(),
+        ]);
+
+        return { userDetails: userData, bookingsDetails: bookingsData };
       } else {
-        throw new Error("Error al obtener los detalles del usuario");
+        throw new Error(
+          "Error al obtener los detalles del usuario o los datos de reservas"
+        );
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Error al obtener los detalles del usuario");
+      throw new Error(
+        "Error al obtener los detalles del usuario o los datos de reservas"
+      );
     }
   };
 
