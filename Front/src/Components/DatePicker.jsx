@@ -100,7 +100,7 @@ const DatePicker = () => {
       </section>
       <button onClick={handleSubmit} className="dateButton">Enviar fechas</button>
       <div className='SeccionHoteles'>
-        <h2>Hoteles en las fechas seleccionadas</h2>
+        <h2>Hoteles en las fechas seleccionadas:</h2>
         <div className='HotelCard'>
         {hotelsShow.length ? (
           hotelsShow.map((hotel) => (
