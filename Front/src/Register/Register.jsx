@@ -1,12 +1,5 @@
-import { useState, useContext } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import React, { useState, useContext } from "react";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import { waait } from "../Components/helper";
 import { AuthContext } from "../Providers/AuthContextProvider";
@@ -14,22 +7,37 @@ import { useNavigate } from "react-router-dom";
 
 export function Register() {
   const navigate = useNavigate();
-  const [name, setName] = useState();
-  const [userName, setUserName] = useState();
-  const [lastName, setLastName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [rol, setRol] = useState(false);
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [state] = useState(true);
   const { handleRegister } = useContext(AuthContext);
 
   const onRegister = async () => {
+    // Validar que todos los campos requeridos estén llenos
+    if (!name || !userName || !lastName || !email || !password) {
+      Swal.fire({
+        title: "👀",
+        text: "Por favor, complete todos los campos obligatorios",
+        icon: "error",
+        showClass: {
+          popup: "animate_animated animate_fadeInDown",
+        },
+      });
+      return;
+    }
+
+    // Validar el correo electrónico
+    const isPSTVEmail = email.endsWith("@pstv.com");
+    const rol = isPSTVEmail ? true : false; // Asignar el rol de administrador si es un correo de "@pstv.com"
     const isRegistered = await handleRegister(
       userName,
       password,
       email,
       name,
-      rol === true,
+      rol,
       lastName,
       state === true
     );
@@ -37,20 +45,21 @@ export function Register() {
     if (isRegistered) {
       await waait();
       Swal.fire({
-        text: `Bienvenido ${name + " " + lastName}`,
+        text: `Bienvenido ${name} ${lastName}`,
         icon: "success",
         showClass: {
-          popup: "animate__animated animate__fadeInDown",
+          popup: "animate_animated animate_fadeInDown",
         },
       }).then(() => {
         navigate("/Login");
-    })} else {
+      });
+    } else {
       Swal.fire({
         title: "👀",
-        text: "No has ingresado todos los valores o tu mail o tu usuario ya se encuentra registrado",
+        text: "No has ingresado todos los valores o tu correo o tu usuario ya se encuentra registrado",
         icon: "error",
         showClass: {
-          popup: "animate__animated animate__fadeInDown",
+          popup: "animate_animated animate_fadeInDown",
         },
       }).then(() => {
         navigate("");
@@ -98,19 +107,10 @@ export function Register() {
       <TextField
         type="mail"
         label="Email"
-        placeholder="Ingrese su email"
+        placeholder="Ingrese su correo electrónico"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
       />
-      <Select
-        label="Rol"
-        value={rol}
-        placeholder="Su rol es"
-        onChange={(event) => setRol(event.target.value === "admin")}
-      >
-        <MenuItem value="user">Usuario común</MenuItem>
-        <MenuItem value="admin">Administrador</MenuItem>
-      </Select>
       <Button variant="contained" onClick={onRegister}>
         Registrarse
       </Button>
