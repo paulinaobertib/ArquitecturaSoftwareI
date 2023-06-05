@@ -115,8 +115,8 @@ const BookingsUsers = () => {
       <table>
         <thead>
           <tr>
-            <th>Date From</th>
-            <th>Date To</th>
+            <th>Fecha desde</th>
+            <th>Fecha hasta</th>
             <th>User</th>
             <th>Hotel</th>
           </tr>

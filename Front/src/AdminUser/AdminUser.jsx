@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Button from '@mui/material/Button';
 import HotelsAmenitiesForm from "./../Components/HotelsAmenitiesForm";
 import BookingsUsers from "./../Components/BookingsUsers";
+import RegUsers from "./../Components/RegUsers";
 
 const AdminUser = () => {
 
@@ -289,6 +290,10 @@ const AdminUser = () => {
       <div>
         <h2>Reservas de los usuarios:</h2>
         <BookingsUsers />
+      </div>
+      <div>
+        <h2>Usuarios registrados:</h2>
+        <RegUsers />
       </div>
     </div>
   );
