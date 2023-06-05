@@ -58,10 +58,12 @@ const Product = () => {
         },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getAmenities();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotel]);
 
   //console.log(amenities);
@@ -94,18 +96,6 @@ const Product = () => {
         });
         throw new Error("Error al registrar el booking");
       }
-  
-      // Reserva exitosa, ahora actualizamos la disponibilidad de habitaciones
-      await fetch(`${BASE_URL}/hotel/${hotel.id}/availability`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: hotel.id,
-          rooms: hotel.rooms - 1, // Actualiza la disponibilidad restando 1 habitación
-        }),
-      });
   
       Swal.fire({
         text: "Registro del booking exitoso",

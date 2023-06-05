@@ -67,7 +67,6 @@ func (b *bookingService) GetBookings() (dto.BookingsDto, e.ApiError) {
 }
 
 func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError) {
-
 	var booking model.Booking
 
 	booking.UserId = bookingDto.UserId
@@ -81,6 +80,12 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 	booking = bookingDAO.InsertBooking(booking)
 
 	bookingDto, _ = b.GetBookingById(booking.Id)
+
+	// Actualizar las habitaciones disponibles
+	roomsAvailable, _ := b.RoomsAvailable(bookingDto)
+	hotel := hotelDAO.GetHotelById(bookingDto.HotelId)
+	hotel.Rooms = roomsAvailable.Rooms - 1 // Restar una habitación
+	hotelDAO.UpdateHotel(hotel)
 
 	return bookingDto, nil
 }
