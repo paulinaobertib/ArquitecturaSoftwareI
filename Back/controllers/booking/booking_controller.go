@@ -50,10 +50,10 @@ func InsertBooking(c *gin.Context) {
 	}
 
 	// Parsear las fechas iniciales y finales
-	layout := "12/05/2003"
+	layout := "2006/01/02"
 	dateFrom, err := time.Parse(layout, bookingDto.DateFrom)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Fecha inicial inválida"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date From inválida"})
 		return
 	}
 
@@ -75,9 +75,6 @@ func InsertBooking(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No hay habitaciones disponibles."})
 		return
 	}
-
-	userID := c.GetInt("user_id")
-	bookingDto.UserId = userID
 
 	bookingDto, er := service.BookingService.InsertBooking(bookingDto) // llama a la funcion del service
 	// Error del Insert

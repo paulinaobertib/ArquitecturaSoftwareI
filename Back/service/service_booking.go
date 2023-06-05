@@ -21,7 +21,7 @@ type bookingServiceInterface interface {
 
 var (
 	BookingService bookingServiceInterface
-	layout         = "12/05/2003"
+	layout         = "2006/01/02"
 )
 
 func init() {
