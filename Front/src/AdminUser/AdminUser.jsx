@@ -7,7 +7,7 @@ import BookingsUsers from "./../Components/BookingsUsers";
 
 const AdminUser = () => {
 
-  //PARTE PARA AGREGAR AMENITIE NUEVA
+  // PARTE PARA AGREGAR AMENITIE NUEVA
   const [amenitieData, setAmenitieData] = useState({
     name: '',
     description: '',
@@ -32,7 +32,7 @@ const AdminUser = () => {
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
-      })
+      });
     }
   };
 
@@ -62,7 +62,7 @@ const AdminUser = () => {
           popup: 'animate__animated animate__fadeInDown',
         },
       });
-      setFormSubmitted(false);
+      setFormSubmittedAmenitie(false);
       return;
     }
 
@@ -74,7 +74,7 @@ const AdminUser = () => {
       body: JSON.stringify(amenitieData),
     })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         return response.json();
       })
       .then((data) => {
@@ -86,6 +86,10 @@ const AdminUser = () => {
             popup: 'animate__animated animate__fadeInDown',
           },
         });
+        setAmenitieData({
+          name: '',
+          description: '',
+        }); // Vaciar los campos después del registro exitoso
       })
       .catch((error) => {
         console.error('Error al agregar la amenidad:', error);
@@ -106,8 +110,8 @@ const AdminUser = () => {
     event.preventDefault();
     setFormSubmittedAmenitie(true);
   };
-      
-  //PARTE PARA AGREGAR UN HOTEL NUEVO
+
+  // PARTE PARA AGREGAR UN HOTEL NUEVO
   const [hotelData, setHotelData] = useState({
     name: '',
     telephone: '',
@@ -149,6 +153,15 @@ const AdminUser = () => {
             popup: 'animate__animated animate__fadeInDown',
           },
         });
+        setHotelData({
+          name: '',
+          telephone: '',
+          email: '',
+          rooms: 0,
+          description: '',
+          availability: 1,
+          image: '',
+        }); // Vaciar los campos después del registro exitoso
       } else {
         console.log('Error al agregar el hotel');
         Swal.fire({
@@ -178,8 +191,6 @@ const AdminUser = () => {
     event.preventDefault();
     setFormSubmitted(true);
   };
-  
-  //PARTE PARA AGREGAR LAS AMENITIES AL HOTEL EN COMPONENTS/HOTELSAMENITIESFORM
 
   return (
     <div>
@@ -187,107 +198,101 @@ const AdminUser = () => {
       <div>
         <h2>Registrar un nuevo hotel</h2>
         <form onSubmit={handleSubmit}>
-      <label>
-        Name:
-        <input
-          type="text"
-          name="name"
-          value={hotelData.name}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <label>
-        Telephone:
-        <input
-          type="text"
-          name="telephone"
-          value={hotelData.telephone}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <label>
-        Email:
-        <input
-          type="email"
-          name="email"
-          value={hotelData.email}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <label>
-        Rooms:
-        <input
-          type="text"
-          name="rooms"
-          value={hotelData.rooms}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <label>
-        Description:
-        <textarea
-          name="description"
-          value={hotelData.description}
-          onChange={handleChange}
-        ></textarea>
-      </label>
-      <br />
-      <br />
-      <label>
-        Image:
-        <input
-          type="text"
-          name="image"
-          value={hotelData.image}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <Button variant="contained" color="primary">Agregar Hotel</Button>
-    </form>
+          <label>
+            Name:
+            <input
+              type="text"
+              name="name"
+              value={hotelData.name}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Telephone:
+            <input
+              type="text"
+              name="telephone"
+              value={hotelData.telephone}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Email:
+            <input
+              type="email"
+              name="email"
+              value={hotelData.email}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Rooms:
+            <input
+              type="text"
+              name="rooms"
+              value={hotelData.rooms}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <label>
+            Description:
+            <textarea
+              name="description"
+              value={hotelData.description}
+              onChange={handleChange}
+            ></textarea>
+          </label>
+          <br />
+          <br />
+          <label>
+            Image:
+            <input
+              type="text"
+              name="image"
+              value={hotelData.image}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <Button variant="contained" type="submit" color="primary">Agregar Hotel</Button>
+        </form>
       </div>
       <div>
-      <h2>Registrar las amenities del hotel:</h2>
-      <HotelsAmenitiesForm />
+        <h2>Registrar las amenities del hotel:</h2>
+        <HotelsAmenitiesForm />
       </div>
       <div>
         <h2>Agregar Amenitie:</h2>
         <label>
-        Nombre:
-        <input
-          type="text"
-          name="name"
-          value={amenitieData.name}
-          onChange={handleInputChange}
-        />
-      </label>
-      <label>
-        Descripcion:
-        <input
-          type="text"
-          name="description"
-          value={amenitieData.description}
-          onChange={handleInputChange}
-        />
-      </label>
-        <Button variant="contained" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button>
-        </div>
-        <div>
-          <h2>Reservas de los usuarios:</h2>
-          <BookingsUsers />
-        </div>
+          Nombre:
+          <input
+            type="text"
+            name="name"
+            value={amenitieData.name}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Descripcion:
+          <input
+            type="text"
+            name="description"
+            value={amenitieData.description}
+            onChange={handleInputChange}
+          />
+        </label>
+        <Button variant="contained" type="submit" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button>
+      </div>
+      <div>
+        <h2>Reservas de los usuarios:</h2>
+        <BookingsUsers />
+      </div>
     </div>
   );
 };
 
 export default AdminUser;
-
-//modificar el codigo para que primero me deje registrar el hotel sin la amenitie
-//despues poner una lista de los hoteles para que elija uno, me agarre su id y con el put agregar amenitie
-//dejar el agregar amenitie nueva como esta que funciona bien
-//mostrar todas las reservas hechas por todos los usuarios
-//si esto sale, pide filtro por hotel y por dia ¿?
