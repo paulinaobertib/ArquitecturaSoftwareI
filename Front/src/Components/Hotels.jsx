@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const infoHotel = `${BASE_URL}/hotels`;
 
-const Hotels = () => {
+const Hotels = ({startDate, endDate}) => {
   const navigate = useNavigate();
   const [hotels, setHotels] = useState([]);
 
@@ -43,7 +43,7 @@ const Hotels = () => {
               key={hotel.id}
               name={hotel.name}
               image={hotel.image}
-              onClick={() => navigate(`/hotel/${hotel.id}`)}
+              onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
             />
           ))
         ) : (

@@ -3,12 +3,18 @@ import "./../Home/home.css";
 import { BASE_URL } from "../configs";
 import Card from "./Card";
 import { useNavigate } from "react-router-dom";
+import Hotels from "./Hotels";
 
-const DatePicker = ({ startDate, setStartDate, endDate, setEndDate }) => {
+const DatePicker = () => {
   const navigate = useNavigate();
   const [hotels, setHotels] = useState([]);
   const [hotelsShow, setHotelsShow] = useState([]);
   const [hotelAvailability, setHotelAvailability] = useState({});
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+
+  console.log(startDate, endDate);
 
   const handleSubmit = async () => {
     try {
@@ -118,6 +124,8 @@ const DatePicker = ({ startDate, setStartDate, endDate, setEndDate }) => {
           )}
         </div>
       </div>
+      <h2>Todos los hoteles:</h2>
+      <Hotels startDate={startDate} endDate={endDate} />
     </div>
   );
 };

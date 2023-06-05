@@ -15,6 +15,25 @@ const Product = () => {
   const { id, startDate, endDate } = useParams();
   const infoHotel = `${BASE_URL}/hotel/${id}`;
 
+  //console.log("start",startDate)
+  //console.log("end",endDate)
+
+  const startDateBooking = new Date(startDate);
+
+  const year = startDateBooking.getFullYear();
+  const month = startDateBooking.getMonth() + 1;
+  const day = startDateBooking.getDate();
+
+  const formattedDateStart = `${year}/0${day}/0${month}`;
+
+  const endDateBooking = new Date(endDate);
+
+  const yearEnd = endDateBooking.getFullYear();
+  const monthEnd = endDateBooking.getMonth() + 1;
+  const dayEnd = endDateBooking.getDate();
+
+  const formattedDateEnd = `${yearEnd}/0${dayEnd}/0${monthEnd}`;
+
   const getHotel = async () => {
     const response = await fetch(infoHotel);
     const resolve = await response.json();
@@ -52,11 +71,13 @@ const Product = () => {
   const createBooking = async () => {
     const NewBooking = {
       user_id: user.id,
-      date_from: new Date(startDate),
-      date_to: new Date(endDate),
-      hotel_id: hotel.id,
-      
+      date_from: formattedDateStart,
+      date_to: formattedDateEnd,
+      hotel_id: hotel.id, 
     };
+
+    console.log("New Booking", NewBooking);
+
     const createBookingResponse = await fetch(BOOKING_URL, {
       method: "POST",
       headers: {
@@ -86,6 +107,8 @@ const Product = () => {
     const createdBooking = await createBookingResponse.json();
     console.log(createdBooking);
   };
+
+  //console.log(formattedDateStart);
 
   return (
     <div className="detailsHotel">
