@@ -1,12 +1,15 @@
 import React, { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import { BASE_URL } from "../configs";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const ProfilePage = () => {
   const { user, getUserBookings } = useContext(AuthContext);
 
   const [userBookings, setUserBookings] = useState([]);
   const [hotelNames, setHotelNames] = useState({});
+  const [selectedHotel, setSelectedHotel] = useState("all");
 
   useEffect(() => {
     const fetchUserBookings = async () => {
@@ -22,6 +25,7 @@ const ProfilePage = () => {
       }
     };
     fetchUserBookings();
+    setSelectedHotel("all"); // Establecer "Todos los hoteles" como opción predeterminada
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, getUserBookings]);
 
@@ -44,6 +48,14 @@ const ProfilePage = () => {
     }
   };
 
+  const handleHotelChange = (event) => {
+    setSelectedHotel(event.target.value);
+  };
+
+  const filteredBookings = selectedHotel === "all"
+    ? userBookings?.bookings
+    : userBookings?.bookings?.filter((booking) => hotelNames[booking.hotel_id] === selectedHotel);
+
   return (
     <div>
       <h2>Perfil de Usuario</h2>
@@ -51,9 +63,17 @@ const ProfilePage = () => {
       <p>Apellido: {user?.last_name}</p>
       <p>Email: {user?.email}</p>
       <h3>Reservas:</h3>
+      <Select value={selectedHotel} onChange={handleHotelChange}>
+        <MenuItem value="all">Todos los hoteles</MenuItem>
+        {Object.keys(hotelNames).map((hotelId) => (
+          <MenuItem key={hotelId} value={hotelNames[hotelId]}>
+            {hotelNames[hotelId]}
+          </MenuItem>
+        ))}
+      </Select>
       {userBookings && (
         <ul>
-          {userBookings?.bookings?.map((booking) => (
+          {filteredBookings?.map((booking) => (
             <li key={booking.id}>
               <p>ID de reserva: {booking.id}</p>
               <p>Hotel: {hotelNames[booking.hotel_id]}</p>
