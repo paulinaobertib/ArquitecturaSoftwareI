@@ -24,15 +24,14 @@ const Product = () => {
   const month = startDateBooking.getMonth() + 1;
   const day = startDateBooking.getDate();
 
-  const formattedDateStart = `${year}/0${day}/0${month}`;
-
   const endDateBooking = new Date(endDate);
 
   const yearEnd = endDateBooking.getFullYear();
   const monthEnd = endDateBooking.getMonth() + 1;
   const dayEnd = endDateBooking.getDate();
 
-  const formattedDateEnd = `${yearEnd}/0${dayEnd}/0${monthEnd}`;
+  const formattedDateStart = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
+  const formattedDateEnd = `${yearEnd}/${String(monthEnd).padStart(2, '0')}/${String(dayEnd).padStart(2, '0')}`;
 
   const getHotel = async () => {
     const response = await fetch(infoHotel);
