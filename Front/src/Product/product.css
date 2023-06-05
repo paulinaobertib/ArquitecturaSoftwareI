@@ -8,7 +8,8 @@
 .hotelImage {
     flex: 1;
     border-radius: 7%;
-    height: 400px;
+    height: 500px;
+    width: 500px;
 }
 
 .details {

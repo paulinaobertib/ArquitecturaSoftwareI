@@ -49,7 +49,7 @@ const Product = () => {
 
   useEffect(() => {
     getHotel();
-    if (user) {
+    if (user && (!startDate || !endDate)) {
       Swal.fire({
         text: 'Seleccione las fechas en la home',
         icon: 'warning',
