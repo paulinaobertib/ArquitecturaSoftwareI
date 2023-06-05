@@ -2,23 +2,38 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../Providers/AuthContextProvider";
 
 const ProfilePage = () => {
-  const { user, getUser } = useContext(AuthContext);
-  const [userDetails, setUserDetails] = useState(null);
+  const { user, getUser, getUserBookings } = useContext(AuthContext);
+  const [userDetails, setUserDetails] = useState();
+  const [userBookings, setUserBookings] = useState([]);
 
   useEffect(() => {
-    const getInfo = async () => {
+    const fetchUserDetails = async () => {
       try {
         if (user) {
           const userData = await getUser(user.id);
-          setUserDetails(userData);
+          console.log("User Details:", userData);
+          setUserDetails(userData); // Actualizar solo los detalles del usuario
         }
       } catch (error) {
         console.error(error);
       }
     };
 
-    getInfo();
-  }, [user, getUser]);
+    const fetchUserBookings = async () => {
+      try {
+        if (user) {
+          const bookingData = await getUserBookings(user.id);
+          console.log("User Bookings:", bookingData);
+          setUserBookings(bookingData); // Actualizar solo las reservas del usuario
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserDetails();
+    fetchUserBookings();
+  }, [user, getUser, getUserBookings]);
 
   if (!userDetails) {
     return <p>Cargando detalles del usuario...</p>;
@@ -27,23 +42,25 @@ const ProfilePage = () => {
   return (
     <div>
       <h2>Perfil de Usuario</h2>
-      <p>Nombre: {userDetails.userDetails.name || "-"}</p>
-      <p>Apellido: {userDetails.userDetails.last_name || "-"}</p>
-      <p>Email: {userDetails.userDetails.email || "-"}</p>
-      <p>Usuario: {userDetails.userDetails.user_name || "-"}</p>
-      <h1>Reservas:</h1>
-      {userDetails.bookings ? (
-        userDetails.bookings.map((booking) => (
-          <div key={booking.id}>
-            <p>ID de Reserva: {booking.id}</p>
-            <p>Fecha Desde: {booking.dateFrom}</p>
-            <p>Fecha Hasta: {booking.dateTo}</p>
-            <p>Duración: {booking.duration}</p>
-            <p>Precio: {booking.price}</p>
-          </div>
-        ))
+      <p>Nombre: {userDetails.name}</p>
+      <p>Apellido: {userDetails.last_name}</p>
+      <p>Email: {userDetails.email}</p>
+      <h3>Reservas:</h3>
+      {userBookings.length > 0 ? (
+        <ul>
+          {userBookings[0].bookings.map((booking) => (
+            <li key={booking.id}>
+              <p>ID de reserva: {booking.id}</p>
+              <p>Hotel: {booking.hotel_id}</p>
+              <p>Usuario para corroborar: {booking.user_id}</p>
+              <p>Fecha de ingreso: {booking.date_from}</p>
+              <p>Fecha de salida: {booking.date_to}</p>
+              <p>------------------</p>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <p>No hay reservas disponibles</p>
+        <p>No se encontraron reservas.</p>
       )}
     </div>
   );

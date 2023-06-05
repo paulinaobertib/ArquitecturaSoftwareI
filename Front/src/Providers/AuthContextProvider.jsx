@@ -11,28 +11,31 @@ const AuthContextProvider = ({ children }) => {
 
   const getUser = async (userId) => {
     try {
-      const [userResponse, bookingsResponse] = await Promise.all([
-        fetch(`${BASE_URL}/user/${userId}`),
-        fetch(`${BASE_URL}/bookings/user/${userId}`),
-      ]);
-
-      if (userResponse.ok && bookingsResponse.ok) {
-        const [userData, bookingsData] = await Promise.all([
-          userResponse.json(),
-          bookingsResponse.json(),
-        ]);
-
-        return { userDetails: userData, bookingsDetails: bookingsData };
+      const userResponse = await fetch(`${BASE_URL}/user/${userId}`);
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        return userData; // Retornar los detalles del usuario directamente
       } else {
-        throw new Error(
-          "Error al obtener los detalles del usuario o los datos de reservas"
-        );
+        throw new Error("Error al obtener los detalles del usuario");
       }
     } catch (error) {
       console.error(error);
-      throw new Error(
-        "Error al obtener los detalles del usuario o los datos de reservas"
-      );
+      throw new Error("Error al obtener los detalles del usuario");
+    }
+  };
+
+  const getUserBookings = async (userId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/bookings/user/${userId}`);
+      if (response.ok) {
+        const bookingsData = await response.json();
+        return bookingsData; // Retornar el arreglo de reservas directamente
+      } else {
+        throw new Error("Error al obtener los datos de reservas del usuario");
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error al obtener los datos de reservas del usuario");
     }
   };
 
@@ -102,6 +105,7 @@ const AuthContextProvider = ({ children }) => {
     logOut,
     handleRegister,
     getUser,
+    getUserBookings,
   };
 
   return (
