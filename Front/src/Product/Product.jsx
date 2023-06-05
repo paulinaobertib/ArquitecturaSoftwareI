@@ -68,43 +68,65 @@ const Product = () => {
   //console.log("ACAA mirame", Object.keys(amenities).length);
 
   const createBooking = async () => {
-    const NewBooking = {
+    const newBooking = {
       user_id: user.id,
       date_from: formattedDateStart,
       date_to: formattedDateEnd,
-      hotel_id: hotel.id, 
+      hotel_id: hotel.id,
     };
-
-    console.log("New Booking", NewBooking);
-
-    const createBookingResponse = await fetch(BOOKING_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(NewBooking),
-    });
-
-    if (!createBookingResponse.ok) {
+  
+    try {
+      const createBookingResponse = await fetch(BOOKING_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBooking),
+      });
+  
+      if (!createBookingResponse.ok) {
+        Swal.fire({
+          text: "Registro del booking no se ha podido realizar",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        throw new Error("Error al registrar el booking");
+      }
+  
+      // Reserva exitosa, ahora actualizamos la disponibilidad de habitaciones
+      await fetch(`${BASE_URL}/hotel/${hotel.id}/availability`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: hotel.id,
+          rooms: hotel.rooms - 1, // Actualiza la disponibilidad restando 1 habitación
+        }),
+      });
+  
       Swal.fire({
-        text: 'Registro del booking no se ha podido realizar',
-        icon: 'error',
+        text: "Registro del booking exitoso",
+        icon: "success",
         showClass: {
-          popup: 'animate__animated animate__fadeInDown',
+          popup: "animate__animated animate__fadeInDown",
         },
       });
-      throw new Error("Error al registrar el booking");
-    } else {
+  
+      const createdBooking = await createBookingResponse.json();
+      console.log(createdBooking);
+    } catch (error) {
       Swal.fire({
-        text: 'Registro del booking exitoso',
-        icon: 'success',
+        text: "Ocurrió un error al realizar la reserva",
+        icon: "error",
         showClass: {
-          popup: 'animate__animated animate__fadeInDown',
+          popup: "animate__animated animate__fadeInDown",
         },
       });
+      console.log(error);
     }
-    const createdBooking = await createBookingResponse.json();
-    console.log(createdBooking);
   };
 
   //console.log(formattedDateStart);

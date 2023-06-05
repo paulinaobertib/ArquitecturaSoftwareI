@@ -29,7 +29,7 @@ const DatePicker = () => {
         });
         return;
       }
-
+  
       if (startDate > endDate) {
         Swal.fire({
           title: "Error",
@@ -41,31 +41,31 @@ const DatePicker = () => {
         });
         return;
       }
-
+  
       const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
       const hotelsData = await hotelsResponse.json();
       setHotels(hotelsData);
-
+  
       const filteredHotels = [];
-
+  
       const keys = Object.keys(hotelsData);
       for (const key of keys) {
         const hotel = hotelsData[key];
         for (const hotelA of hotel) {
           const hotelID = hotelA.id;
-          //console.log("ACAA", hotel);
+  //console.log("ACAA", hotel);
           //console.log("hotela", hotelA);
           const availabilityResponse = await fetch(
             `${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`
           );
           const availabilityData = await availabilityResponse.json();
-
+  
           if (availabilityData.rooms_available > 0) {
             filteredHotels.push(hotelA);
           }
         }
       }
-
+  
       setHotelsShow(filteredHotels);
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
@@ -129,9 +129,7 @@ const DatePicker = () => {
                 key={hotel.id}
                 name={hotel.name}
                 image={hotel.image}
-                onClick={() =>
-                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)
-                }
+                onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
               />
             ))
           ) : (
