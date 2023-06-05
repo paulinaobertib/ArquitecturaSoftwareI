@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./../Home/home.css";
 import { BASE_URL } from "../configs";
 import Card from "./Card";
 import { useNavigate } from "react-router-dom";
 import Hotels from "./Hotels";
+import Swal from "sweetalert2";
 
 const DatePicker = () => {
   const navigate = useNavigate();
@@ -13,47 +14,59 @@ const DatePicker = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-
   console.log(startDate, endDate);
 
   const handleSubmit = async () => {
     try {
+      if (!startDate || !endDate) {
+        Swal.fire({
+          title: "Error",
+          text: "Por favor, selecciona ambas fechas",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        return;
+      }
+
+      if (startDate > endDate) {
+        Swal.fire({
+          title: "Error",
+          text: "Fechas no válidas",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        return;
+      }
+
       const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
       const hotelsData = await hotelsResponse.json();
       setHotels(hotelsData);
+
+      const filteredHotels = [];
 
       const keys = Object.keys(hotelsData);
       for (const key of keys) {
         const hotel = hotelsData[key];
         for (const hotelA of hotel) {
+          const hotelID = hotelA.id;
           //console.log("ACAA", hotel);
           //console.log("hotela", hotelA);
-          const hotelID = hotelA.id;
-          //console.log("ACA ID", hotelID);
-
           const availabilityResponse = await fetch(
             `${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`
           );
           const availabilityData = await availabilityResponse.json();
 
           if (availabilityData.rooms_available > 0) {
-            setHotelsShow((prevHotels) => [...prevHotels, hotelA]);
-            //console.log("si entro");
-          } else {
-            console.log("no hay");
+            filteredHotels.push(hotelA);
           }
-
-          setHotelAvailability((prevAvailability) => ({
-            ...prevAvailability,
-            [hotelID]: availabilityData,
-          }));
-
-          //console.log("MIRA SI SIRVE", availabilityData);
         }
       }
 
-      //console.log("MIRA MIRA", hotelsShow);
-      //console.log("ACA VER IMP",Object.keys(hotelAvailability).length);
+      setHotelsShow(filteredHotels);
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
     }
@@ -116,7 +129,9 @@ const DatePicker = () => {
                 key={hotel.id}
                 name={hotel.name}
                 image={hotel.image}
-                onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
+                onClick={() =>
+                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)
+                }
               />
             ))
           ) : (
