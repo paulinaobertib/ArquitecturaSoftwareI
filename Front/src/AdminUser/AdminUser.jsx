@@ -5,16 +5,43 @@ import Button from '@mui/material/Button';
 import HotelsAmenitiesForm from "./../Components/HotelsAmenitiesForm";
 import BookingsUsers from "./../Components/BookingsUsers";
 import RegUsers from "./../Components/RegUsers";
+import * as Yup from 'yup';
+
+// Validación del esquema de la amenitie
+const amenitieSchema = Yup.object().shape({
+  name: Yup.string().required('El nombre es requerido'),
+  description: Yup.string().required('La descripción es requerida'),
+});
+
+// Validación del esquema del hotel
+const hotelSchema = Yup.object().shape({
+  name: Yup.string().required('El nombre es requerido'),
+  telephone: Yup.string().required('El teléfono es requerido').matches(/^[0-9]+$/, 'El teléfono debe contener solo números'),
+  email: Yup.string().required('El correo electrónico es requerido').email('El correo electrónico debe tener un formato válido'),
+  rooms: Yup.number().required('La cantidad de habitaciones es requerida').integer('La cantidad de habitaciones debe ser un número entero'),
+  description: Yup.string().required('La descripción es requerida'),
+  image: Yup.string().url('La URL de la imagen no es válida'),
+});
 
 const AdminUser = () => {
-
-  // PARTE PARA AGREGAR AMENITIE NUEVA
   const [amenitieData, setAmenitieData] = useState({
     name: '',
     description: '',
   });
   const [formSubmittedAmenitie, setFormSubmittedAmenitie] = useState(false);
   const [existingAmenities, setExistingAmenities] = useState([]);
+
+  const [hotelData, setHotelData] = useState({
+    name: '',
+    telephone: '',
+    email: '',
+    rooms: 0,
+    description: '',
+    availability: 1,
+    image: '',
+  });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchExistingAmenities();
@@ -31,7 +58,7 @@ const AdminUser = () => {
         text: `Error al obtener las amenities existentes`,
         icon: "error",
         showClass: {
-          popup: "animate__animated animate__fadeInDown",
+          popup: "animate_animated animate_fadeInDown",
         },
       });
     }
@@ -60,7 +87,7 @@ const AdminUser = () => {
         text: 'La amenitie ya existe',
         icon: 'error',
         showClass: {
-          popup: 'animate__animated animate__fadeInDown',
+          popup: 'animate_animated animate_fadeInDown',
         },
       });
       setFormSubmittedAmenitie(false);
@@ -75,7 +102,6 @@ const AdminUser = () => {
       body: JSON.stringify(amenitieData),
     })
       .then((response) => {
-        //console.log(response);
         return response.json();
       })
       .then((data) => {
@@ -84,13 +110,13 @@ const AdminUser = () => {
           text: 'Amenitie registrada con éxito',
           icon: 'success',
           showClass: {
-            popup: 'animate__animated animate__fadeInDown',
+            popup: 'animate_animated animate_fadeInDown',
           },
         });
         setAmenitieData({
           name: '',
           description: '',
-        }); // Vaciar los campos después del registro exitoso
+        });
       })
       .catch((error) => {
         console.error('Error al agregar la amenidad:', error);
@@ -98,7 +124,7 @@ const AdminUser = () => {
           text: 'La amenitie no se ha podido registrar',
           icon: 'error',
           showClass: {
-            popup: 'animate__animated animate__fadeInDown',
+            popup: 'animate_animated animate_fadeInDown',
           },
         });
       })
@@ -108,20 +134,17 @@ const AdminUser = () => {
   };
 
   const handleSubmitAmenitie = () => {
-    setFormSubmittedAmenitie(true);
+    amenitieSchema
+      .validate(amenitieData, { abortEarly: false })
+      .then(() => setFormSubmittedAmenitie(true))
+      .catch((error) => {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err.message;
+        });
+        setErrors(validationErrors);
+      });
   };
-
-  // PARTE PARA AGREGAR UN HOTEL NUEVO
-  const [hotelData, setHotelData] = useState({
-    name: '',
-    telephone: '',
-    email: '',
-    rooms: 0,
-    description: '',
-    availability: 1,
-    image: '',
-  });
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     if (formSubmitted) {
@@ -136,6 +159,8 @@ const AdminUser = () => {
     };
 
     try {
+      await hotelSchema.validate(parsedHotelData, { abortEarly: false });
+
       const response = await fetch(`${BASE_URL}/hotel`, {
         method: 'POST',
         body: JSON.stringify(parsedHotelData),
@@ -150,7 +175,7 @@ const AdminUser = () => {
           text: 'Hotel registrado con éxito',
           icon: 'success',
           showClass: {
-            popup: 'animate__animated animate__fadeInDown',
+            popup: 'animate_animated animate_fadeInDown',
           },
         });
         setHotelData({
@@ -161,19 +186,25 @@ const AdminUser = () => {
           description: '',
           availability: 1,
           image: '',
-        }); // Vaciar los campos después del registro exitoso
+        });
       } else {
         console.log('Error al agregar el hotel');
         Swal.fire({
           text: 'El hotel no se ha podido registrar',
           icon: 'error',
           showClass: {
-            popup: 'animate__animated animate__fadeInDown',
+            popup: 'animate_animated animate_fadeInDown',
           },
         });
       }
     } catch (error) {
-      console.log('Error de red:', error);
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err.message;
+        });
+        setErrors(validationErrors);
+      }
     } finally {
       setFormSubmitted(false);
     }
@@ -189,14 +220,23 @@ const AdminUser = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setFormSubmitted(true);
+    hotelSchema
+      .validate(hotelData, { abortEarly: false })
+      .then(() => setFormSubmitted(true))
+      .catch((error) => {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err.message;
+        });
+        setErrors(validationErrors);
+      });
   };
 
   return (
     <div>
       <h1>PAGINA DE ADMINISTRADOR</h1>
       <div>
-        <h2>Registrar un nuevo hotel</h2>
+        <h2>Registrar un nuevo hotel:</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Name:
@@ -206,6 +246,7 @@ const AdminUser = () => {
               value={hotelData.name}
               onChange={handleChange}
             />
+            {errors.name && <p>{errors.name}</p>}
           </label>
           <br />
           <label>
@@ -216,26 +257,29 @@ const AdminUser = () => {
               value={hotelData.telephone}
               onChange={handleChange}
             />
+            {errors.telephone && <p>{errors.telephone}</p>}
           </label>
           <br />
           <label>
             Email:
             <input
-              type="email"
+              type="text"
               name="email"
               value={hotelData.email}
               onChange={handleChange}
             />
+            {errors.email && <p>{errors.email}</p>}
           </label>
           <br />
           <label>
             Rooms:
             <input
-              type="text"
+              type="number"
               name="rooms"
               value={hotelData.rooms}
               onChange={handleChange}
             />
+            {errors.rooms && <p>{errors.rooms}</p>}
           </label>
           <br />
           <label>
@@ -244,55 +288,61 @@ const AdminUser = () => {
               name="description"
               value={hotelData.description}
               onChange={handleChange}
-            ></textarea>
+            />
+            {errors.description && <p>{errors.description}</p>}
           </label>
           <br />
-          <br />
           <label>
-            Image:
+            Image URL:
             <input
               type="text"
               name="image"
               value={hotelData.image}
               onChange={handleChange}
             />
+            {errors.image && <p>{errors.image}</p>}
           </label>
           <br />
-          <Button variant="contained" type="submit" color="primary">Agregar Hotel</Button>
+          <Button variant="contained" color="primary" type="submit">Agregar hotel</Button>
         </form>
       </div>
       <div>
-        <h2>Registrar las amenities del hotel:</h2>
+        <h2>Registrar una nueva amenitie:</h2>
+        <form>
+          <label>
+            Name:
+            <input
+              type="text"
+              name="name"
+              value={amenitieData.name}
+              onChange={handleInputChange}
+            />
+            {errors.name && <p>{errors.name}</p>}
+          </label>
+          <br />
+          <label>
+            Description:
+            <textarea
+              name="description"
+              value={amenitieData.description}
+              onChange={handleInputChange}
+            />
+            {errors.description && <p>{errors.description}</p>}
+          </label>
+          <br />
+          <Button variant="contained" color="primary" onClick={handleSubmitAmenitie}>Agregar amenitie</Button>
+        </form>
+      </div>
+      <div>
+        <h2>Agregar una amenitie al hotel:</h2>
         <HotelsAmenitiesForm />
       </div>
       <div>
-        <h2>Agregar Amenitie:</h2>
-        <label>
-          Nombre:
-          <input
-            type="text"
-            name="name"
-            value={amenitieData.name}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          Descripcion:
-          <input
-            type="text"
-            name="description"
-            value={amenitieData.description}
-            onChange={handleInputChange}
-          />
-        </label>
-        <Button variant="contained" type="button" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button> 
-        </div>
-      <div>
-        <h2>Reservas de los usuarios:</h2>
+        <h2>Listado de reservas:</h2>
         <BookingsUsers />
       </div>
       <div>
-        <h2>Usuarios registrados:</h2>
+        <h2>Listado de usuarios registrados:</h2>
         <RegUsers />
       </div>
     </div>
