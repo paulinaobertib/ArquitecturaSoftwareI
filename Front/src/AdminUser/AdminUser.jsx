@@ -106,8 +106,7 @@ const AdminUser = () => {
       });
   };
 
-  const handleSubmitAmenitie = (event) => {
-    event.preventDefault();
+  const handleSubmitAmenitie = () => {
     setFormSubmittedAmenitie(true);
   };
 
@@ -285,8 +284,8 @@ const AdminUser = () => {
             onChange={handleInputChange}
           />
         </label>
-        <Button variant="contained" type="submit" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button>
-      </div>
+        <Button variant="contained" type="button" color="primary" onClick={handleSubmitAmenitie}>Agregar Amenitie</Button> 
+        </div>
       <div>
         <h2>Reservas de los usuarios:</h2>
         <BookingsUsers />
