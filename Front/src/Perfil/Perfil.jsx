@@ -3,6 +3,7 @@ import { AuthContext } from "../Providers/AuthContextProvider";
 import { BASE_URL } from "../configs";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 
 const ProfilePage = () => {
   const { user, getUserBookings } = useContext(AuthContext);
@@ -10,6 +11,7 @@ const ProfilePage = () => {
   const [userBookings, setUserBookings] = useState([]);
   const [hotelNames, setHotelNames] = useState({});
   const [selectedHotel, setSelectedHotel] = useState("all");
+  const [filterFromDate, setFilterFromDate] = useState("");
 
   useEffect(() => {
     const fetchUserBookings = async () => {
@@ -52,9 +54,24 @@ const ProfilePage = () => {
     setSelectedHotel(event.target.value);
   };
 
-  const filteredBookings = selectedHotel === "all"
-    ? userBookings?.bookings
-    : userBookings?.bookings?.filter((booking) => hotelNames[booking.hotel_id] === selectedHotel);
+  const handleFilterFromDateChange = (event) => {
+    setFilterFromDate(event.target.value);
+  };
+
+  const filteredBookings = userBookings?.bookings?.filter((booking) => {
+    const hotelName = hotelNames[booking.hotel_id];
+    const fromDate = new Date(booking.date_from);
+
+    if (selectedHotel !== "all" && hotelName !== selectedHotel) {
+      return false;
+    }
+
+    if (filterFromDate && fromDate < new Date(filterFromDate)) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <div>
@@ -63,20 +80,30 @@ const ProfilePage = () => {
       <p>Apellido: {user?.last_name}</p>
       <p>Email: {user?.email}</p>
       <h3>Reservas:</h3>
-      <Select value={selectedHotel} onChange={handleHotelChange}>
-        <MenuItem value="all">Todos los hoteles</MenuItem>
-        {Object.keys(hotelNames).map((hotelId) => (
-          <MenuItem key={hotelId} value={hotelNames[hotelId]}>
-            {hotelNames[hotelId]}
-          </MenuItem>
-        ))}
-      </Select>
+      <div>
+        <Select value={selectedHotel} onChange={handleHotelChange}>
+          <MenuItem value="all">Todos los hoteles</MenuItem>
+          {Object.keys(hotelNames).map((hotelId) => (
+            <MenuItem key={hotelId} value={hotelNames[hotelId]}>
+              {hotelNames[hotelId]}
+            </MenuItem>
+          ))}
+        </Select>
+        <TextField
+          label="Fecha"
+          type="date"
+          value={filterFromDate}
+          onChange={handleFilterFromDateChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </div>
       {userBookings && (
         <ul>
           {filteredBookings?.map((booking) => (
             <li key={booking.id}>
               <p>ID de reserva: {booking.id}</p>
-              <p>Hotel: {hotelNames[booking.hotel_id]}</p>
               <p>Fecha de ingreso: {booking.date_from}</p>
               <p>Fecha de salida: {booking.date_to}</p>
               <p>------------------</p>
