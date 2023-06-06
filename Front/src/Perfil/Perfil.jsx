@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import { BASE_URL } from "../configs";
 import Select from "@mui/material/Select";
@@ -52,6 +52,9 @@ const ProfilePage = () => {
 
   const handleHotelChange = (event) => {
     setSelectedHotel(event.target.value);
+    const hotelId = Object.keys(hotelNames).find((key) => hotelNames[key] === event.target.value);
+    const hotelName = hotelNames[hotelId] || "Todos los hoteles";
+    console.log("Hotel seleccionado:", hotelName);
   };
 
   const handleFilterFromDateChange = (event) => {
@@ -104,6 +107,7 @@ const ProfilePage = () => {
           {filteredBookings?.map((booking) => (
             <li key={booking.id}>
               <p>ID de reserva: {booking.id}</p>
+              <p>Hotel: {hotelNames[booking.hotel_id]}</p>
               <p>Fecha de ingreso: {booking.date_from}</p>
               <p>Fecha de salida: {booking.date_to}</p>
               <p>------------------</p>

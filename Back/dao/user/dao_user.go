@@ -12,7 +12,7 @@ func GetUserById(id int) model.User {
 	var user model.User
 
 	//el first me devuelve el primer usuario que encuentra
-	Db.Where("id = ?", id).Preload("Booking").First(&user)
+	Db.Where("id = ?", id).First(&user)
 	//imprime la información
 	log.Debug("User: ", user)
 
@@ -23,7 +23,7 @@ func GetUserByUsername(username string) model.User {
 	var user model.User
 
 	//el first me devuelve el primer usuario que encuentra
-	Db.Where("user_name = ?", username).Preload("Booking").First(&user)
+	Db.Where("user_name = ?", username).First(&user)
 	//imprime la información
 	log.Debug("User: ", user)
 
@@ -34,7 +34,7 @@ func GetUserByEmail(mail string) model.User {
 	var user model.User
 
 	//el first me devuelve el primer usuario que encuentra
-	Db.Where("email = ?", mail).Preload("Booking").First(&user)
+	Db.Where("email = ?", mail).First(&user)
 	//imprime la información
 	log.Debug("User: ", user)
 
@@ -45,7 +45,7 @@ func GetUsers() model.Users {
 	var users model.Users
 
 	//ejecuta una consulta para recuperar todos los registros de la tabla asociada al modelo de datos y los almacena en la variable users
-	Db.Preload("Booking").Find(&users)
+	Db.Find(&users)
 
 	log.Debug("Users: ", users)
 

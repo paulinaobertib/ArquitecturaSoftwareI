@@ -12,7 +12,7 @@ func GetHotelById(id int) model.Hotel {
 	var hotel model.Hotel
 
 	//Db.Where("id = ?", id).Preload("Booking").Preload("Amenitie").First(&hotel)
-	Db.Where("id = ?", id).Preload("Amenitie").First(&hotel)
+	Db.Where("id = ?", id).First(&hotel)
 	log.Debug("Hotel: ", hotel)
 
 	return hotel
@@ -21,7 +21,7 @@ func GetHotelById(id int) model.Hotel {
 func GetHotels() model.Hotels {
 	var hotels model.Hotels
 
-	Db.Preload("Amenities").Find(&hotels)
+	Db.Find(&hotels)
 
 	log.Debug("Hotels: ", hotels)
 
