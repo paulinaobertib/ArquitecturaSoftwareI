@@ -43,7 +43,9 @@ const Product = () => {
     if (hotel && hotel.id) {
       const response = await fetch(`${BASE_URL}/amenities/hotel/${hotel.id}`);
       const resolve = await response.json();
-      setAmenities(resolve.amenities);
+      if (resolve.amenities.name != "") {
+        setAmenities(resolve.amenities);
+      }
     }
   };
 
@@ -58,7 +60,6 @@ const Product = () => {
         },
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

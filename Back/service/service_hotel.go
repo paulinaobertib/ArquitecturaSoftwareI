@@ -82,7 +82,7 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError) {
 
 	var hotel model.Hotel
-	var amenitie model.Amenitie
+	//var amenitie model.Amenitie
 
 	hotel.Availability = hotelDto.Availability
 	hotel.Description = hotelDto.Description
@@ -91,7 +91,7 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 	hotel.Telephone = hotelDto.Telephone
 	hotel.Rooms = hotelDto.Rooms
 	hotel.Image = hotelDto.Image
-	hotel.Amenities = append(hotel.Amenities, &amenitie)
+	//hotel.Amenities = append(hotel.Amenities, &amenitie)
 
 	hotel = hotelDAO.InsertHotel(hotel)
 

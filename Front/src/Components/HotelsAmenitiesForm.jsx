@@ -30,7 +30,9 @@ const HotelsAmenitiesForm = () => {
     try {
       const response = await fetch(`${BASE_URL}/amenities`);
       const data = await response.json();
-      setAmenities(data.amenities);
+      if (data.amenities != "") {
+        setAmenities(data.amenities);
+      }
     } catch (error) {
       console.error('Error al obtener las amenities:', error);
       Swal.fire({
