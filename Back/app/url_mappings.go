@@ -42,7 +42,7 @@ func mapUrls() {
 	router.GET("/images/:id", imageController.GetImageById)
 	router.GET("/image/hotel/:id", imageController.GetImagesByHotelId)
 	router.GET("/image", imageController.GetImages)
-	router.DELETE("/image/:id", imageController.DeleteImageById)
+	router.DELETE("/imagedelete/:id", imageController.DeleteImageById)
 
 	log.Info("Finishing mappings configurations")
 }

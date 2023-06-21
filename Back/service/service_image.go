@@ -4,14 +4,14 @@ import (
 	"github.com/google/uuid"
 	"io"
 	"mime/multipart"
+	"os"
+	"path/filepath"
 
 	imageDAO "booking-api/dao/image"
 	"booking-api/dto"
 	"booking-api/model"
 
 	e "booking-api/utils/errors"
-	"os"
-	"path/filepath"
 )
 
 type imageService struct{}
@@ -20,11 +20,11 @@ type imageServiceInterface interface {
 	GetImageById(id int) (dto.ImageDto, e.ApiError)
 	GetImages() (dto.ImagesDto, e.ApiError)
 	ImageInsert(hotelID int, imageFile *multipart.FileHeader) (dto.ImageDto, e.ApiError)
-	GetImagesByHotelId(hotelID int) (dto.ImagesDto, e.ApiError) 
+	GetImagesByHotelId(hotelID int) (dto.ImagesDto, e.ApiError)
 	DeleteImageById(id int) e.ApiError
 }
 
-var ( 
+var (
 	ImageService imageServiceInterface
 )
 
@@ -40,7 +40,7 @@ func (i *imageService) GetImageById(id int) (dto.ImageDto, e.ApiError) {
 	}
 
 	imageDto := dto.ImageDto{
-		Id: image.Id,
+		Id:  image.Id,
 		Url: image.Url,
 	}
 
@@ -76,14 +76,7 @@ func (i *imageService) ImageInsert(hotelID int, imageFile *multipart.FileHeader)
 	fileExt := filepath.Ext(imageFile.Filename)
 
 	// Construir la ruta completa del archivo
-	filePath := "image" + "/" + fileName + fileExt
-
-	// Guardar el archivo en el directorio correspondiente
-	err := saveFile(imageFile, filePath)
-	if err != nil {
-		// Manejar el error en caso de fallo al guardar la imagen
-		return imageDto, e.NewInternalServerApiError("Failed to save image", err)
-	}
+	filePath := "imagenesHoteles" + "/" + fileName + fileExt
 
 	// Crear una nueva instancia de model.Image
 	image := model.Image{
@@ -94,6 +87,14 @@ func (i *imageService) ImageInsert(hotelID int, imageFile *multipart.FileHeader)
 	// Llamar al DAO de imágenes para insertar la imagen
 	image = imageDAO.ImageInsert(image)
 
+	// Guardar el archivo en el directorio correspondiente
+	err := saveFile(imageFile, filePath)
+	if err != nil {
+		// Manejar el error en caso de fallo al guardar la imagen
+		_ = i.DeleteImageById(image.Id) // Eliminar la imagen insertada anteriormente
+		return imageDto, e.NewInternalServerApiError("Failed to save image", err)
+	}
+
 	// Actualizar imageDto con el ID generado
 	imageDto.Id = image.Id
 	imageDto.Url = image.Url
@@ -101,7 +102,6 @@ func (i *imageService) ImageInsert(hotelID int, imageFile *multipart.FileHeader)
 
 	return imageDto, nil
 }
-
 
 func saveFile(imageFile *multipart.FileHeader, filePath string) error {
 	// Abrir el archivo cargado
@@ -134,7 +134,7 @@ func (i *imageService) GetImagesByHotelId(hotelID int) (dto.ImagesDto, e.ApiErro
 	for i, image := range images {
 		imageDto := dto.ImageDto{
 			Id:   image.Id,
-			Url: image.Url,
+			Url:  image.Url,
 		}
 		imageDtos[i] = imageDto
 	}
@@ -154,9 +154,8 @@ func (i *imageService) DeleteImageById(id int) e.ApiError {
 	// Lógica para eliminar la imagen por su ID
 	err = imageDAO.DeleteImageById(id)
 	if err != nil {
-		// Otros errores de eliminación del hotel
 		return e.NewInternalServerApiError("Failed to delete image", err)
 	}
 
-	return nil // Sin errores, se eliminó el hotel correctamente
+	return nil // Sin errores, se eliminó la imagen correctamente
 }

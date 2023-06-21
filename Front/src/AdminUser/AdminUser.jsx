@@ -3,6 +3,10 @@ import { BASE_URL } from "../configs";
 import Swal from "sweetalert2";
 import Button from '@mui/material/Button';
 import HotelsAmenitiesForm from "./../Components/HotelsAmenitiesForm";
+import HotelsAmenitiesDelete from '../Components/HotelsAmenitiesDelete';
+import AmenitiesDelete from '../Components/AmenitiesDelete';
+import HotelsImagesForm from '../Components/HotelsImagesForm';
+import ImagesDelete from '../Components/ImagesDelete';
 import BookingsUsers from "./../Components/BookingsUsers";
 import RegUsers from "./../Components/RegUsers";
 import * as Yup from 'yup';
@@ -20,7 +24,6 @@ const hotelSchema = Yup.object().shape({
   email: Yup.string().required('El correo electrónico es requerido').email('El correo electrónico debe tener un formato válido'),
   rooms: Yup.number().required('La cantidad de habitaciones es requerida').integer('La cantidad de habitaciones debe ser un número entero'),
   description: Yup.string().required('La descripción es requerida'),
-  image: Yup.string().url('La URL de la imagen no es válida'),
 });
 
 const AdminUser = () => {
@@ -38,7 +41,6 @@ const AdminUser = () => {
     rooms: 0,
     description: '',
     availability: 1,
-    image: '',
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
@@ -185,7 +187,6 @@ const AdminUser = () => {
           rooms: 0,
           description: '',
           availability: 1,
-          image: '',
         });
       } else {
         console.log('Error al agregar el hotel');
@@ -292,17 +293,6 @@ const AdminUser = () => {
             {errors.description && <p>{errors.description}</p>}
           </label>
           <br />
-          <label>
-            Image URL:
-            <input
-              type="text"
-              name="image"
-              value={hotelData.image}
-              onChange={handleChange}
-            />
-            {errors.image && <p>{errors.image}</p>}
-          </label>
-          <br />
           <Button variant="contained" color="primary" type="submit">Agregar hotel</Button>
         </form>
       </div>
@@ -336,6 +326,22 @@ const AdminUser = () => {
       <div>
         <h2>Agregar una amenitie al hotel:</h2>
         <HotelsAmenitiesForm />
+      </div>
+      <div>
+        <h2>Eliminar una amenitie al hotel:</h2>
+        <HotelsAmenitiesDelete />
+      </div>
+      <div>
+        <h2>Eliminar una amenitie:</h2>
+        <AmenitiesDelete />
+      </div>
+      <div>
+        <h2>Agregar imagenes al hotel:</h2>
+        <HotelsImagesForm />
+      </div>
+      <div>
+        <h2>Eliminar una imagen:</h2>
+        <ImagesDelete />
       </div>
       <div>
         <h2>Listado de reservas:</h2>
