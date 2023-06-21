@@ -15,6 +15,7 @@ type amenitieServiceInterface interface {
 	GetAmenities() (dto.AmenitiesDto, e.ApiError)
 	InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError)
 	GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError)
+	DeleteAmenitieById(amenitieId int) (e.ApiError)
 }
 
 var (
@@ -25,7 +26,7 @@ func init() {
 	AmenitieService = &amenitieService{}
 }
 
-func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) {
+func (a *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) {
 
 	var amenitie model.Amenitie = amenitieDAO.GetAmenitieById(id)
 	var amenitieDto dto.AmenitieDto
@@ -41,7 +42,7 @@ func (h *amenitieService) GetAmenitieById(id int) (dto.AmenitieDto, e.ApiError) 
 	return amenitieDto, nil
 }
 
-func (h *amenitieService) GetAmenities() (dto.AmenitiesDto, e.ApiError) {
+func (a *amenitieService) GetAmenities() (dto.AmenitiesDto, e.ApiError) {
 
 	var amenities model.Amenities = amenitieDAO.GetAmenities()
 	amenitiesList := make([]dto.AmenitieDto, 0)
@@ -61,7 +62,7 @@ func (h *amenitieService) GetAmenities() (dto.AmenitiesDto, e.ApiError) {
 	}, nil
 }
 
-func (h *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError) {
+func (a *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError) {
 
 	var amenitie model.Amenitie
 
@@ -75,7 +76,7 @@ func (h *amenitieService) InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.Ameni
 	return amenitieDto, nil
 }
 
-func (h *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError) {
+func (a *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError) {
 	var amenities model.Amenities = amenitieDAO.GetAmenitiesByHotelId(hotelId)
 	amenitiesList := make([]dto.AmenitieDto, 0)
 
@@ -90,4 +91,20 @@ func (h *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, 
 	return dto.AmenitiesDto{
 		Amenities: amenitiesList,
 	}, nil
+}
+
+func (a *amenitieService) DeleteAmenitieById(amenitieId int) (e.ApiError) {
+	_, err := a.GetAmenitieById(amenitieId)
+
+	if err != nil {
+		return err
+	}
+
+	err = amenitieDAO.DeleteAmenitieById(amenitieId)
+
+	if err != nil {
+		return e.NewInternalServerApiError("Failed to delete amenitie", err)
+	}
+
+	return nil
 }

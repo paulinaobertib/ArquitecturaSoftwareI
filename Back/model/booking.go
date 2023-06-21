@@ -9,10 +9,10 @@ type Booking struct {
 	DateFrom time.Time `gorm:"type:date;not null"`
 	DateTo   time.Time `gorm:"type:date;not null"`
 
-	User   User `gorm:"foreingkey:UserId"`
+	User   User `gorm:"foreignKey:UserId"`
 	UserId int
 
-	Hotel   Hotel `gorm:"foreingkey:HotelId"`
+	Hotel   Hotel `gorm:"foreignKey:HotelId"`
 	HotelId int
 }
 

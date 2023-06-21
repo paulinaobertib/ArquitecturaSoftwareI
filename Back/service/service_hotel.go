@@ -16,6 +16,7 @@ type hotelServiceInterface interface {
 	GetHotels() (dto.HotelsDto, e.ApiError)
 	InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError)
 	AddHotelAmenitie(hotelId, amenitieId int) e.ApiError
+	DeleteHotelAmenitie(hotelId, amenitieId int) e.ApiError
 }
 
 var (
@@ -41,7 +42,6 @@ func (h *hotelService) GetHotelById(id int) (dto.HotelDto, e.ApiError) {
 	hotelDto.Email = hotel.Email
 	hotelDto.Telephone = hotel.Telephone
 	hotelDto.Rooms = hotel.Rooms
-	hotelDto.Image = hotel.Image
 
 	return hotelDto, nil
 }
@@ -61,7 +61,6 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 		hotelDto.Name = hotel.Name
 		hotelDto.Telephone = hotel.Telephone
 		hotelDto.Rooms = hotel.Rooms
-		hotelDto.Image = hotel.Image
 
 		amenities := make([]string, 0)
 
@@ -82,7 +81,6 @@ func (h *hotelService) GetHotels() (dto.HotelsDto, e.ApiError) {
 func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiError) {
 
 	var hotel model.Hotel
-	//var amenitie model.Amenitie
 
 	hotel.Availability = hotelDto.Availability
 	hotel.Description = hotelDto.Description
@@ -90,8 +88,6 @@ func (h *hotelService) InsertHotel(hotelDto dto.HotelDto) (dto.HotelDto, e.ApiEr
 	hotel.Name = hotelDto.Name
 	hotel.Telephone = hotelDto.Telephone
 	hotel.Rooms = hotelDto.Rooms
-	hotel.Image = hotelDto.Image
-	//hotel.Amenities = append(hotel.Amenities, &amenitie)
 
 	hotel = hotelDAO.InsertHotel(hotel)
 
@@ -123,6 +119,41 @@ func (s *hotelService) AddHotelAmenitie(hotelId, amenitieId int) e.ApiError {
 	// Asociar la amenidad al hotel
 	hotel.Amenities = append(hotel.Amenities, &amenitie)
 	hotelDAO.UpdateHotel(hotel)
+
+	return nil
+}
+
+func (h *hotelService) DeleteHotelAmenitie(hotelId, amenitieId int) e.ApiError {
+	// Obtener el hotel por su ID
+	hotel := hotelDAO.GetHotelById(hotelId)
+	if hotel.Id == 0 {
+		return e.NewNotFoundApiError("Hotel not found")
+	}
+
+	// Obtener la amenitie por su ID
+	amenitie := amenitieDAO.GetAmenitieById(amenitieId)
+	if amenitie.Id == 0 {
+		return e.NewNotFoundApiError("Amenitie not found")
+	}
+
+	// Eliminar la amenidad al hotel
+	// Encuentra el índice del amenitie que deseas eliminar
+	var indexToRemove int = -1
+	for i, a := range hotel.Amenities {
+		if a.Id == amenitie.Id {
+			indexToRemove = i
+			break
+		}
+	}
+
+	// Si se encontró el amenitie, elimínalo de la lista
+	if indexToRemove != -1 {
+		hotel.Amenities = append(hotel.Amenities[:indexToRemove], hotel.Amenities[indexToRemove+1:]...)
+	}
+
+	// Actualiza el hotel en la base de datos
+	hotelDAO.UpdateHotel(hotel)
+	hotelDAO.DeleteHotelAmenitie(hotelId, amenitieId)
 
 	return nil
 }

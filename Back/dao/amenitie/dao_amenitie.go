@@ -2,8 +2,12 @@ package dao
 
 import (
 	"booking-api/model"
+
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+
+	"errors"
+	e "booking-api/utils/errors"
 )
 
 var Db *gorm.DB
@@ -47,4 +51,18 @@ func GetAmenitiesByHotelId(hotelId int) model.Amenities {
 	log.Debug("Amenities by Hotel ID: ", amenities)
 
 	return amenities
+}
+
+func DeleteAmenitieById(amenitieId int) e.ApiError {
+
+	err := Db.Delete(&model.Amenitie{}, amenitieId).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return e.NewBadRequestApiError("Amenitie not found")
+		}
+		return e.NewBadRequestApiError("Failed to delete amenitie")
+	}
+
+	return nil
 }

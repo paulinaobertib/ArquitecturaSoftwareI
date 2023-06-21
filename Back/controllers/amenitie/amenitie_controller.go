@@ -72,3 +72,21 @@ func GetAmenitiesByHotelId(c *gin.Context) {
 
     c.JSON(http.StatusOK, amenitiesDto)
 }
+
+func DeleteAmenitieById(c *gin.Context) {
+	// Obtiene el ID del amenitie de los parámetros de la solicitud
+	hotelID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid amenitie ID"})
+		return
+	}
+
+	// Llama al servicio para eliminar la amenitie por su ID
+	err = service.AmenitieService.DeleteAmenitieById(hotelID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Amenitie deleted successfully"})
+}

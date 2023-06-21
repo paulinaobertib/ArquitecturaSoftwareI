@@ -5,6 +5,7 @@ import (
 	bookingController "booking-api/controllers/booking"
 	hotelController "booking-api/controllers/hotel"
 	userController "booking-api/controllers/user"
+	imageController "booking-api/controllers/image"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -22,6 +23,8 @@ func mapUrls() {
 	router.GET("/hotels", hotelController.GetHotels)
 	router.POST("/hotel", hotelController.HotelInsert)
 	router.PUT("/hotel/:id/add-amenitie/:id_amenitie", hotelController.AddHotelAmenitie)
+	router.DELETE("/hotel/:id/remove-amenitie/:id_amenitie", hotelController.DeleteHotelAmenitie)
+	router.POST("/hotel/:id/add-image", imageController.ImageInsert)
 
 	router.GET("/booking/:id", bookingController.GetBookingById)
 	router.GET("/bookings", bookingController.GetBookings)
@@ -34,6 +37,12 @@ func mapUrls() {
 	router.GET("/amenities", amenitieController.GetAmenities)
 	router.POST("/amenitie", amenitieController.AmenitieInsert)
 	router.GET("/amenities/hotel/:id", amenitieController.GetAmenitiesByHotelId)
+	router.DELETE("/amenitie/:id", amenitieController.DeleteAmenitieById)
+
+	router.GET("/images/:id", imageController.GetImageById)
+	router.GET("/image/hotel/:id", imageController.GetImagesByHotelId)
+	router.GET("/image", imageController.GetImages)
+	router.DELETE("/image/:id", imageController.DeleteImageById)
 
 	log.Info("Finishing mappings configurations")
 }

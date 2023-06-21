@@ -5,6 +5,7 @@ import (
 	bookingDAO "booking-api/dao/booking"
 	hotelDAO "booking-api/dao/hotel"
 	userDAO "booking-api/dao/user"
+	imageDAO "booking-api/dao/image"
 
 	"booking-api/model"
 
@@ -43,6 +44,7 @@ func init() {
 	hotelDAO.Db = db
 	bookingDAO.Db = db
 	amenitieDAO.Db = db
+	imageDAO.Db = db
 }
 
 func StartDbEngine() {
@@ -51,6 +53,7 @@ func StartDbEngine() {
 	db.AutoMigrate(&model.Hotel{})
 	db.AutoMigrate(&model.Booking{})
 	db.AutoMigrate(&model.Amenitie{})
+	db.AutoMigrate(&model.Image{})
 
 	log.Info("Finishing Migration Database Tables")
 }
