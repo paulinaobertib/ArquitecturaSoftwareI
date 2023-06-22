@@ -17,6 +17,7 @@ type userServiceInterface interface {
 	GetUserByEmail(username string) (dto.UserDto, e.ApiError)
 	GetUsers() (dto.UsersDto, e.ApiError)
 	InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError)
+	UserLogin(loginDto dto.UserDto) (dto.UserDto, e.ApiError)
 }
 
 // inicializo una variable de service para poder usar sus metodos
@@ -49,17 +50,17 @@ func (u *userService) GetUserById(id int) (dto.UserDto, e.ApiError) {
 	userDto.State = user.State
 
 	/*
-	for _, booking := range user.Bookings {
-		var dtoBooking dto.BookingDto
+		for _, booking := range user.Bookings {
+			var dtoBooking dto.BookingDto
 
-		dtoBooking.DateFrom = booking.DateFrom.Format(layout)
-		dtoBooking.DateTo = booking.DateTo.Format(layout)
-		dtoBooking.Duration = booking.Duration
-		dtoBooking.Price = booking.Price
-		dtoBooking.HotelId = booking.HotelId
+			dtoBooking.DateFrom = booking.DateFrom.Format(layout)
+			dtoBooking.DateTo = booking.DateTo.Format(layout)
+			dtoBooking.Duration = booking.Duration
+			dtoBooking.Price = booking.Price
+			dtoBooking.HotelId = booking.HotelId
 
-		userDto.BookingsDto = append(userDto.BookingsDto, dtoBooking)
-	}*/
+			userDto.BookingsDto = append(userDto.BookingsDto, dtoBooking)
+		}*/
 
 	return userDto, nil
 }
@@ -94,7 +95,7 @@ func (u *userService) GetUserByEmail(mail string) (dto.UserDto, e.ApiError) {
 	var userDto dto.UserDto
 
 	//si no lo trae, me da error de que no encontró el usuario
-	if user.Email== "" {
+	if user.Email == "" {
 		return userDto, e.NewBadRequestApiError("no se ha encontrado el usuario")
 	}
 
@@ -155,4 +156,23 @@ func (u *userService) InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError) 
 	userDto.Id = user.Id
 
 	return userDto, nil
+}
+
+func (u *userService) UserLogin(loginDto dto.UserDto) (dto.UserDto, e.ApiError) {
+
+	var user model.User
+
+	if user.Id == 0 {
+		return loginDto, e.NewBadRequestApiError("Usuario no registrado")
+	}
+
+	if user.Password != loginDto.Password {
+		return loginDto, e.NewBadRequestApiError("Contraseña incorrecta")
+	}
+	loginDto.Id = user.Id
+	loginDto.Name = user.Name
+	loginDto.LastName = user.LastName
+	loginDto.Rol = user.Rol
+
+	return loginDto, nil
 }
