@@ -137,31 +137,35 @@ const Product = () => {
     setActiveIndex(newIndex);
   };
 
+  const showArrows = images.length > 1;
+
   return (
     <div className="detailsHotel">
       <h1>Detalles del hotel seleccionado: </h1>
       <div className="detailEach">
-        <div className="carousel-container">
           {images.length > 0 ? (
             <div className='arrows'>
-              <button
-                className={`prev-arrow ${activeIndex === 0 ? 'hidden' : ''}`}
-                onClick={() => handleSlideChange(-1)}
-              >
-                &lt;
-              </button>
-              <img src={`${BASE_URL}/${images[activeIndex]?.url}`} alt="Imagen del producto" />
-              <button
-                className={`next-arrow ${activeIndex === images.length - 1 ? 'hidden' : ''}`}
-                onClick={() => handleSlideChange(1)}
-              >
-                &gt;
-              </button>
+              {showArrows && (
+                <button
+                  className={`prev-arrow ${activeIndex === 0 ? 'hidden' : ''}`}
+                  onClick={() => handleSlideChange(-1)}
+                >
+                  &lt;
+                </button>
+              )}
+              <img src={`${BASE_URL}/${images[activeIndex]?.url}`} alt="Imagen del producto" className="hotelImage"/>
+              {showArrows && (
+                <button
+                  className={`next-arrow ${activeIndex === images.length - 1 ? 'hidden' : ''}`}
+                  onClick={() => handleSlideChange(1)}
+                >
+                  &gt;
+                </button>
+              )}
             </div>
-            ) : (
-              <p>No se encontraron imágenes para este producto.</p>
-            )}
-          </div>
+          ) : (
+            <p>No se encontraron imágenes para este producto.</p>
+          )}
         <div className="details">
           <h3>{hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
@@ -176,18 +180,18 @@ const Product = () => {
           )}
         </div>
       </div>
-      <h5>Amenities</h5>
+      <h4>Amenities</h4>
       <div className="Amenities">
         {amenities?.length ? (
-            amenities.map((amenitie) => (
-              <React.Fragment key={amenitie.id}>
-              <p>Nombre: {amenitie.name}</p>
-              <p>Descripcion: {amenitie.description}</p>
-              </React.Fragment>
-            ))
-          ) : (
-            <p>El hotel no tiene amenities</p>
-          )}
+          amenities.map((amenitie) => (
+            <React.Fragment key={amenitie.id}>
+              <h5>{amenitie.name}</h5>
+              <p>{amenitie.description}</p>
+            </React.Fragment>
+          ))
+        ) : (
+          <p>El hotel no tiene amenities</p>
+        )}
       </div>
     </div>
   );

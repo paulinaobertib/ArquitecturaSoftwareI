@@ -28,3 +28,13 @@
     height: 12%;
     align-self: center;
 }
+
+.arrows {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-arrow, .next-arrow {
+    background-color: aquamarine;
+}
