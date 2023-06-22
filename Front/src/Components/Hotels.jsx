@@ -41,8 +41,8 @@ const Hotels = ({startDate, endDate}) => {
           hotels.map((hotel) => (
             <Card
               key={hotel.id}
+              hotelId={hotel.id}
               name={hotel.name}
-              image={hotel.image}
               onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
             />
           ))

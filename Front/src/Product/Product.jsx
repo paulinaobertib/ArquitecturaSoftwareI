@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../configs";
 import "./product.css";
 import { AuthContext } from "../Providers/AuthContextProvider";
-import React from "react";
 import Swal from "sweetalert2";
 
 const BOOKING_URL = `${BASE_URL}/booking`;
@@ -13,10 +12,9 @@ const Product = () => {
   const [hotel, setHotel] = useState(null);
   const [amenities, setAmenities] = useState([]);
   const { id, startDate, endDate } = useParams();
+  const [images, setImages] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const infoHotel = `${BASE_URL}/hotel/${id}`;
-
-  //console.log("start",startDate)
-  //console.log("end",endDate)
 
   const startDateBooking = new Date(startDate);
 
@@ -49,6 +47,23 @@ const Product = () => {
     }
   };
 
+  const getImagesByHotelId = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/image/hotel/${id}`);
+      const data = await response.json();
+      setImages(data.images);
+    } catch (error) {
+      console.error('Error al obtener las imágenes del hotel:', error);
+      Swal.fire({
+        text: 'Error al obtener las imágenes del hotel',
+        icon: 'error',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown',
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     getHotel();
     if (user && (!startDate || !endDate)) {
@@ -64,11 +79,8 @@ const Product = () => {
 
   useEffect(() => {
     getAmenities();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getImagesByHotelId();
   }, [hotel]);
-
-  //console.log(amenities);
-  //console.log("ACAA mirame", Object.keys(amenities).length);
 
   const createBooking = async () => {
     const newBooking = {
@@ -120,13 +132,36 @@ const Product = () => {
     }
   };
 
-  //console.log(formattedDateStart);
+  const handleSlideChange = (direction) => {
+    const newIndex = (activeIndex + images.length + direction) % images.length;
+    setActiveIndex(newIndex);
+  };
 
   return (
     <div className="detailsHotel">
       <h1>Detalles del hotel seleccionado: </h1>
       <div className="detailEach">
-        <img className="hotelImage" src={hotel?.image} alt="hotel" />
+        <div className="carousel-container">
+          {images.length > 0 ? (
+            <div className='arrows'>
+              <button
+                className={`prev-arrow ${activeIndex === 0 ? 'hidden' : ''}`}
+                onClick={() => handleSlideChange(-1)}
+              >
+                &lt;
+              </button>
+              <img src={`${BASE_URL}/${images[activeIndex]?.url}`} alt="Imagen del producto" />
+              <button
+                className={`next-arrow ${activeIndex === images.length - 1 ? 'hidden' : ''}`}
+                onClick={() => handleSlideChange(1)}
+              >
+                &gt;
+              </button>
+            </div>
+            ) : (
+              <p>No se encontraron imágenes para este producto.</p>
+            )}
+          </div>
         <div className="details">
           <h3>{hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>

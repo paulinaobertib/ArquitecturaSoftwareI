@@ -13,5 +13,3 @@ const Home = () => {
 };
 
 export default Home;
-
-//METODO DE ENVIAR LAS FECHAS ES LO UNICO QUE FALLAAAAAAAAAA

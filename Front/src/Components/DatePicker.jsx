@@ -53,8 +53,6 @@ const DatePicker = () => {
         const hotel = hotelsData[key];
         for (const hotelA of hotel) {
           const hotelID = hotelA.id;
-  //console.log("ACAA", hotel);
-          //console.log("hotela", hotelA);
           const availabilityResponse = await fetch(
             `${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`
           );
@@ -128,7 +126,6 @@ const DatePicker = () => {
               <Card
                 key={hotel.id}
                 name={hotel.name}
-                image={hotel.image}
                 onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
               />
             ))
