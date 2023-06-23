@@ -59,18 +59,18 @@ func AmenitieInsert(c *gin.Context) {
 }
 
 func GetAmenitiesByHotelId(c *gin.Context) {
-    log.Debug("Hotel id to load: " + c.Param("id"))
+	log.Debug("Hotel id to load: " + c.Param("id"))
 
-    id, _ := strconv.Atoi(c.Param("id"))
-    
-    amenitiesDto, err := service.AmenitieService.GetAmenitiesByHotelId(id)
+	id, _ := strconv.Atoi(c.Param("id"))
 
-    if err != nil {
-        c.JSON(err.Status(), err)
-        return
-    }
+	amenitiesDto, err := service.AmenitieService.GetAmenitiesByHotelId(id)
 
-    c.JSON(http.StatusOK, amenitiesDto)
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, amenitiesDto)
 }
 
 func DeleteAmenitieById(c *gin.Context) {

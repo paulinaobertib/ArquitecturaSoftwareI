@@ -15,7 +15,7 @@ type amenitieServiceInterface interface {
 	GetAmenities() (dto.AmenitiesDto, e.ApiError)
 	InsertAmenitie(amenitieDto dto.AmenitieDto) (dto.AmenitieDto, e.ApiError)
 	GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, e.ApiError)
-	DeleteAmenitieById(amenitieId int) (e.ApiError)
+	DeleteAmenitieById(amenitieId int) e.ApiError
 }
 
 var (
@@ -93,7 +93,7 @@ func (a *amenitieService) GetAmenitiesByHotelId(hotelId int) (dto.AmenitiesDto, 
 	}, nil
 }
 
-func (a *amenitieService) DeleteAmenitieById(amenitieId int) (e.ApiError) {
+func (a *amenitieService) DeleteAmenitieById(amenitieId int) e.ApiError {
 	_, err := a.GetAmenitieById(amenitieId)
 
 	if err != nil {
