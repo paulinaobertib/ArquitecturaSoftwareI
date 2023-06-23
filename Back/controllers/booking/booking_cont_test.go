@@ -2,58 +2,54 @@ package bookingController_test
 
 import (
 	"bytes"
-	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-
 	bookingController "booking-api/controllers/booking"
-	"booking-api/dto"
+
+	"github.com/gin-gonic/gin"
+	// "github.com/stretchr/testify/assert"
 )
 
 func TestInsertBooking(t *testing.T) {
-	// Crear un enrutador Gin
-	router := gin.Default()
+	// Configurar el entorno del test
+	gin.SetMode(gin.TestMode)
+	r := gin.Default()
+	r.POST("/booking", bookingController.InsertBooking)
 
-	// Ruta de ejemplo que ejecuta la función InsertBooking
-	router.POST("/booking", bookingController.InsertBooking)
-
-	// Preparar el cuerpo JSON de la reserva
-	bookingData := dto.BookingDto{
-		HotelId:  2,
-		DateFrom: "2023/05/30",
-		DateTo:   "2023/06/05",
-	}
-
-	jsonData, _ := json.Marshal(bookingData)
-
-	// Crear una solicitud HTTP de tipo POST al endpoint /booking con el cuerpo JSON
-	req, err := http.NewRequest("POST", "/booking", bytes.NewBuffer(jsonData))
+	// Crear una solicitud HTTP de prueba con los datos deseados
+	reqBody := []byte(`{
+		"Id": 1,
+		"UserId": 1,
+		"HotelId": 1,
+		"DateFrom": "2023/07/10",
+		"DateTo": "2023/07/12"
+	}`)
+	req, err := http.NewRequest("POST", "/booking", bytes.NewBuffer(reqBody))
 	if err != nil {
-		t.Fatalf("Error al crear la solicitud HTTP: %s", err.Error())
+		t.Fatal(err)
 	}
 
-	// Crear un registrador de respuestas HTTP simulado
-	resp := httptest.NewRecorder()
-
-	// Enviar la solicitud al enrutador Gin y capturar la respuesta
-	router.ServeHTTP(resp, req)
+	// Ejecutar la solicitud HTTP de prueba
+	rec := httptest.NewRecorder()
+	r.ServeHTTP(rec, req)
 
 	// Verificar el código de estado de la respuesta
-	assert.Equal(t, http.StatusCreated, resp.Code)
-
-	// Leer la respuesta JSON
-	var bookingResponse dto.BookingDto
-	err = json.Unmarshal(resp.Body.Bytes(), &bookingResponse)
-	if err != nil {
-		t.Fatalf("Error al leer la respuesta JSON: %s", err.Error())
+	if rec.Code != http.StatusOK {
+		t.Errorf("Código de estado esperado: %d; Código de estado actual: %d", http.StatusOK, rec.Code)
 	}
 
-	// Verificar los datos de la reserva insertada
-	assert.Equal(t, bookingData.HotelId, bookingResponse.HotelId)
-	assert.Equal(t, bookingData.DateFrom, bookingResponse.DateFrom)
-	assert.Equal(t, bookingData.DateTo, bookingResponse.DateTo)
+	// Leer el cuerpo de la respuesta
+	respBody, err := io.ReadAll(rec.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Verificar el contenido de la respuesta
+	expectedResp := `{"status": "success", "message": "Booking created successfully."}`
+	if string(respBody) != expectedResp {
+		t.Errorf("Respuesta esperada: %s; Respuesta actual: %s", expectedResp, string(respBody))
+	}
 }

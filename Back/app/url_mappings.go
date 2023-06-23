@@ -4,8 +4,8 @@ import (
 	amenitieController "booking-api/controllers/amenitie"
 	bookingController "booking-api/controllers/booking"
 	hotelController "booking-api/controllers/hotel"
-	userController "booking-api/controllers/user"
 	imageController "booking-api/controllers/image"
+	userController "booking-api/controllers/user"
 
 	log "github.com/sirupsen/logrus"
 )

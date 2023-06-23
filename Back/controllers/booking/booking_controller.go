@@ -38,6 +38,8 @@ func GetBookings(c *gin.Context) {
 	c.JSON(http.StatusOK, bookingsDto)
 }
 
+const layout = "2006/01/02"
+
 func InsertBooking(c *gin.Context) {
 	var bookingDto dto.BookingDto
 	err := c.BindJSON(&bookingDto)
@@ -50,7 +52,6 @@ func InsertBooking(c *gin.Context) {
 	}
 
 	// Parsear las fechas iniciales y finales
-	layout := "2006/01/02"
 	dateFrom, err := time.Parse(layout, bookingDto.DateFrom)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Date From inválida"})
