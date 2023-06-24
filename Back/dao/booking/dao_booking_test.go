@@ -18,6 +18,8 @@ func (m *MockBookingDAO) InsertBooking(booking model.Booking) model.Booking {
 	return booking
 }
 
+// TEST PARA LA FUNCION GETBOOKINGBYIDyy
+
 func TestInsertBooking(t *testing.T) {
 	// Crear una instancia del mock del DAO de Booking
 	mockDAO := &MockBookingDAO{}
@@ -41,4 +43,41 @@ func TestInsertBooking(t *testing.T) {
 	assert.Equal(t, newBooking.HotelId, inserted.HotelId)
 	assert.Equal(t, newBooking.DateFrom, inserted.DateFrom)
 	assert.Equal(t, newBooking.DateTo, inserted.DateTo)
+}
+
+// TEST PARA LA FUNCION GETBOOKINGBYID
+
+func (m *MockBookingDAO) GetBookingById(id int) model.Booking {
+	// Simular la búsqueda en la base de datos
+	booking := model.Booking{
+		Id:       id,
+		UserId:   1,
+		HotelId:  1,
+		DateFrom: time.Date(2023, time.July, 10, 0, 0, 0, 0, time.UTC),
+		DateTo:   time.Date(2023, time.July, 17, 0, 0, 0, 0, time.UTC),
+	}
+
+	return booking
+}
+
+func TestGetBookingById(t *testing.T) {
+	// Crear una instancia del mock del DAO de Booking
+	mockDAO := &MockBookingDAO{}
+
+	// ID de reserva a buscar
+	bookingId := 1
+
+	// Obtener la reserva utilizando el mock del DAO
+	booking := mockDAO.GetBookingById(bookingId)
+
+	// Verificar que la reserva obtenida tenga el ID correcto
+	assert.Equal(t, bookingId, booking.Id)
+
+	// Verificar otros atributos de la reserva
+	assert.Equal(t, 1, booking.UserId)
+	assert.Equal(t, 1, booking.HotelId)
+	expectedDateFrom := time.Date(2023, time.July, 10, 0, 0, 0, 0, time.UTC)
+	assert.Equal(t, expectedDateFrom, booking.DateFrom)
+	expectedDateTo := time.Date(2023, time.July, 17, 0, 0, 0, 0, time.UTC)
+	assert.Equal(t, expectedDateTo, booking.DateTo)
 }

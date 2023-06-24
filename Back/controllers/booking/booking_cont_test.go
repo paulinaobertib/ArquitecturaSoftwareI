@@ -1,55 +1,107 @@
 package bookingController_test
 
 import (
-	"bytes"
-	"io"
+	bookingController "booking-api/controllers/booking"
+	"booking-api/dto"
+	"booking-api/service"
+	"booking-api/utils/errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
-
-	bookingController "booking-api/controllers/booking"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestInsertBooking(t *testing.T) {
-	// Configurar el entorno del test
-	gin.SetMode(gin.TestMode)
-	r := gin.Default()
-	r.POST("/booking", bookingController.InsertBooking)
+type TestBookings struct {
+}
 
-	// Crear una solicitud HTTP de prueba con los datos deseados
-	reqBody := []byte(`{
-		"Id": 1,
-		"UserId": 1,
-		"HotelId": 1,
-		"DateFrom": "2023/07/10",
-		"DateTo": "2023/07/12"
-	}`)
-	req, err := http.NewRequest("POST", "/booking", bytes.NewBuffer(reqBody))
-	if err != nil {
-		t.Fatal(err)
+func (t *TestBookings) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, errors.ApiError) {
+	if bookingDto.UserId == 0 {
+		return dto.BookingDto{}, errors.NewApiError("Error al insertar la reserva", "booking_insert_error", http.StatusInternalServerError, nil)
 	}
 
-	// Ejecutar la solicitud HTTP de prueba
-	rec := httptest.NewRecorder()
-	r.ServeHTTP(rec, req)
+	return dto.BookingDto{}, nil
+}
+
+func (t *TestBookings) GetBookingById(id int) (dto.BookingDto, errors.ApiError) {
+	if id == 1 {
+		return dto.BookingDto{
+			Id:       1,
+			DateFrom: "2023/06/25",
+			DateTo:   "2023/06/30",
+			UserId:   1,
+			HotelId:  2,
+		}, nil
+	}
+
+	return dto.BookingDto{}, errors.NewApiError("Booking not found", "booking_not_found", http.StatusNotFound, nil)
+}
+
+func (t *TestBookings) GetBookings() (dto.BookingsDto, errors.ApiError) {
+	return dto.BookingsDto{}, nil
+}
+
+// Si se cambia el valor a 0, no deja realizar la reserva
+func (t *TestBookings) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, errors.ApiError) {
+	return dto.RoomsAvailable{Rooms: 5}, nil
+}
+
+func (t *TestBookings) GetBookingsByUserId(id int) (dto.BookingsDto, errors.ApiError) {
+	return dto.BookingsDto{}, nil
+}
+
+func (t *TestBookings) GetUnavailableDatesByHotel(hotelID int) ([]time.Time, error) {
+	return []time.Time{}, nil
+}
+
+func TestInsertBooking(t *testing.T) {
+	service.BookingService = &TestBookings{}
+	router := gin.Default()
+
+	router.POST("/booking", bookingController.InsertBooking)
+
+	// Solicitud HTTP POST - Si se cambia el User id a 0 se ve el error
+	myJson := `{
+		"hotel_id": 2,
+		"date_from": "2023/05/30",
+		"date_to": "2023/06/05",
+		"user_id": 1
+	}`
+
+	bodyJson := strings.NewReader(myJson)
+	request, _ := http.NewRequest("POST", "/booking", bodyJson)
+
+	response := httptest.NewRecorder()
+
+	router.ServeHTTP(response, request)
+
+	fmt.Println(response.Body.String())
 
 	// Verificar el código de estado de la respuesta
-	if rec.Code != http.StatusOK {
-		t.Errorf("Código de estado esperado: %d; Código de estado actual: %d", http.StatusOK, rec.Code)
-	}
+	assert.Equal(t, http.StatusCreated, response.Code)
+}
 
-	// Leer el cuerpo de la respuesta
-	respBody, err := io.ReadAll(rec.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
+func TestGetBookingById(t *testing.T) {
+	service.BookingService = &TestBookings{}
+	router := gin.Default()
 
-	// Verificar el contenido de la respuesta
-	expectedResp := `{"status": "success", "message": "Booking created successfully."}`
-	if string(respBody) != expectedResp {
-		t.Errorf("Respuesta esperada: %s; Respuesta actual: %s", expectedResp, string(respBody))
-	}
+	router.GET("/booking/:id", bookingController.GetBookingById)
+
+	// Crear una solicitud HTTP de tipo GET al endpoint /booking/{id}
+
+	// Si se cambia el id a otro numero se ve el error
+	request, _ := http.NewRequest("GET", "/booking/1", nil)
+
+	response := httptest.NewRecorder()
+
+	router.ServeHTTP(response, request)
+
+	fmt.Println(response.Body.String())
+
+	// Verificar el código de estado de la respuesta
+	assert.Equal(t, http.StatusOK, response.Code)
 }
