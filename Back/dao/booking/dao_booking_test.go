@@ -14,7 +14,7 @@ type MockBookingDAO struct{}
 func (m *MockBookingDAO) InsertBooking(booking model.Booking) model.Booking {
 	// Simular la lógica de inserción en la base de datos
 	// Se establece un ID para la reserva
-	booking.Id = 0 // Simulando asignación de ID
+	booking.Id = 1 // Si modifico a cero, genera la alerta
 	return booking
 }
 
