@@ -47,7 +47,7 @@ func (t *TestBookings) GetBookings() (dto.BookingsDto, errors.ApiError) {
 
 // Si se cambia el valor a 0, no deja realizar la reserva
 func (t *TestBookings) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, errors.ApiError) {
-	return dto.RoomsAvailable{Rooms: 5}, nil
+	return dto.RoomsAvailable{Rooms: 1}, nil
 }
 
 func (t *TestBookings) GetBookingsByUserId(id int) (dto.BookingsDto, errors.ApiError) {
@@ -82,7 +82,7 @@ func TestInsertBooking(t *testing.T) {
 	fmt.Println(response.Body.String())
 
 	// Verificar el código de estado de la respuesta
-	assert.Equal(t, http.StatusCreated, response.Code)
+	assert.Equal(t, http.StatusCreated, response.Code, "El código de respuesta no es el esperado")
 }
 
 func TestGetBookingById(t *testing.T) {
@@ -103,5 +103,5 @@ func TestGetBookingById(t *testing.T) {
 	fmt.Println(response.Body.String())
 
 	// Verificar el código de estado de la respuesta
-	assert.Equal(t, http.StatusOK, response.Code)
+	assert.Equal(t, http.StatusOK, response.Code, "El ID buscado no existe")
 }
