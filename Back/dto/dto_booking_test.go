@@ -8,7 +8,7 @@ import (
 )
 
 func TestBookingDto(t *testing.T) {
-	// Crear una instancia del DTO de Booking
+	// Crear una instancia del DTO de Booking, si modifico alguna y deja de ser igual, da la alerta
 	bookingDto := dto.BookingDto{
 		Id:       1,
 		DateFrom: "2023/07/10",
@@ -18,9 +18,9 @@ func TestBookingDto(t *testing.T) {
 	}
 
 	// Verificar los valores de los campos del DTO de Booking
-	assert.Equal(t, 1, bookingDto.Id)
-	assert.Equal(t, "2023/07/10", bookingDto.DateFrom)
-	assert.Equal(t, "2023/07/17", bookingDto.DateTo)
-	assert.Equal(t, 1, bookingDto.UserId)
-	assert.Equal(t, 1, bookingDto.HotelId)
+	assert.Equal(t, 1, bookingDto.Id, "El ID de la reserva no coincide")
+	assert.Equal(t, "2023/07/10", bookingDto.DateFrom, "La fecha de inicio no coincide")
+	assert.Equal(t, "2023/07/17", bookingDto.DateTo, "La fecha de fin no coincide")
+	assert.Equal(t, 1, bookingDto.UserId, "El ID del usuario no coincide")
+	assert.Equal(t, 1, bookingDto.HotelId, "El ID del hotel no coincide")
 }

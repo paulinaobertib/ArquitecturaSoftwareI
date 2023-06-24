@@ -45,20 +45,20 @@ func TestCreateBooking(t *testing.T) {
 
 	// Verificar que DateFrom sea el 10 de julio de 2023
 	expectedDateFrom := time.Date(2023, time.July, 10, 0, 0, 0, 0, time.UTC)
-	assert.Equal(expectedDateFrom, booking.DateFrom, "Expected DateFrom to be %v", expectedDateFrom)
+	assert.Equal(expectedDateFrom, booking.DateFrom, "Se espero que la fecha de inicio sea %v", expectedDateFrom)
 
 	// Verificar que DateTo sea el 17 de julio de 2023
 	expectedDateTo := time.Date(2023, time.July, 17, 0, 0, 0, 0, time.UTC)
-	assert.Equal(expectedDateTo, booking.DateTo, "Expected DateTo to be %v", expectedDateTo)
+	assert.Equal(expectedDateTo, booking.DateTo, "Se espero que la fecha de fin sea %v", expectedDateTo)
 
 	// Verificar que Id de Booking
-	assert.Equal(1, booking.Id, "Expected Id to be 1")
+	assert.Equal(1, booking.Id, "El ID de la reserva no coincide")
 
 	// Verificar propiedades de User
-	assert.Equal("Martin", booking.User.Name, "Expected User Name to be 'Martin'")
-	assert.Equal("tinchoMartinez", booking.User.UserName, "Expected User UserName to be 'Martinez'")
+	assert.Equal("Martin", booking.User.Name, "El nombre no coincide")
+	assert.Equal("tinchoMartinez", booking.User.UserName, "El nombre de usuario no coincide")
 
 	// Verificar propiedades de Hotel
-	assert.Equal("Amanecer Hotel", booking.Hotel.Name, "Expected Hotel Name to be 'Amanecer Hotel'")
-	assert.Equal(10, booking.Hotel.Rooms, "Expected Hotel Rooms to be 10")
+	assert.Equal("Amanecer Hotel", booking.Hotel.Name, "El nombre del hotel coincide")
+	assert.Equal(10, booking.Hotel.Rooms, "La cantidad de habitaciones no coincide")
 }
