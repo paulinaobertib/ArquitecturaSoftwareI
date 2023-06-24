@@ -2,7 +2,6 @@ package service
 
 import (
 	bookingDAO "booking-api/dao/booking"
-	hotelDAO "booking-api/dao/hotel"
 	"booking-api/dto"
 	"booking-api/model"
 	e "booking-api/utils/errors"
@@ -15,7 +14,7 @@ type bookingServiceInterface interface {
 	GetBookingById(id int) (dto.BookingDto, e.ApiError)
 	GetBookings() (dto.BookingsDto, e.ApiError)
 	InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError)
-	RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError)
+	GetUnavailableDatesByHotel(Id int) ([]time.Time, error)
 	GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError)
 }
 
@@ -81,30 +80,29 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 
 	bookingDto, _ = b.GetBookingById(booking.Id)
 
-	// Actualizar las habitaciones disponibles
-	roomsAvailable, _ := b.RoomsAvailable(bookingDto)
-	hotel := hotelDAO.GetHotelById(bookingDto.HotelId)
-	hotel.Rooms = roomsAvailable.Rooms - 1 // Restar una habitación
-	hotelDAO.UpdateHotel(hotel)
-
 	return bookingDto, nil
 }
 
-func (b *bookingService) RoomsAvailable(bookingDto dto.BookingDto) (dto.RoomsAvailable, e.ApiError) {
-	hotelID := bookingDto.HotelId
-	DateFrom, _ := time.Parse(layout, bookingDto.DateFrom)
-	DateTo, _ := time.Parse(layout, bookingDto.DateTo)
+func (b *bookingService) GetUnavailableDatesByHotel(Id int) ([]time.Time, error) {
+	var unavailableDates []time.Time
 
-	bookings := bookingDAO.GetBookingByHotelAndDates(hotelID, DateFrom, DateTo)
-	hotel := hotelDAO.GetHotelById(hotelID)
-
-	roomsAvailable := dto.RoomsAvailable{
-		//HotelID: hotelID,
-		Rooms: hotel.Rooms - bookings,
+	bookings, err := bookingDAO.GetBookingsByHotelId(Id)
+	if err != nil {
+		return nil, err
 	}
 
-	return roomsAvailable, nil
+	for _, booking := range bookings {
+		startDate := booking.DateFrom
+		endDate := booking.DateTo
+
+		for date := startDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
+			unavailableDates = append(unavailableDates, date)
+		}
+	}
+
+	return unavailableDates, nil
 }
+
 
 func (b *bookingService) GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError) {
 

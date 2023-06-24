@@ -29,7 +29,7 @@ const DatePicker = () => {
         });
         return;
       }
-  
+
       if (startDate > endDate) {
         Swal.fire({
           title: "Error",
@@ -41,30 +41,49 @@ const DatePicker = () => {
         });
         return;
       }
-  
+
       const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
       const hotelsData = await hotelsResponse.json();
       setHotels(hotelsData);
-  
+      console.log(hotelsData);
+
       const filteredHotels = [];
-  
+
       const keys = Object.keys(hotelsData);
       for (const key of keys) {
         const hotel = hotelsData[key];
         for (const hotelA of hotel) {
           const hotelID = hotelA.id;
           const availabilityResponse = await fetch(
-            `${BASE_URL}/booking/availability/${hotelID}/${startDate}/${endDate}`
+            `${BASE_URL}/booking/no-availability/${hotelID}`
           );
           const availabilityData = await availabilityResponse.json();
-  
-          if (availabilityData.rooms_available > 0) {
+
+          console.log("ACA", availabilityData);
+
+          if (availabilityData != null) {
+            const startDateComp = new Date(startDate);
+            const endDateComp = new Date(endDate);
+
+            let isAvailable = true;
+            for (const date of availabilityData) {
+              const unavailableDate = new Date(date);
+              if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
+                isAvailable = false;
+                break;
+              }
+            }
+
+            if (isAvailable) {
+              filteredHotels.push(hotelA);
+            }
+          } else {
             filteredHotels.push(hotelA);
           }
-        }
       }
-  
       setHotelsShow(filteredHotels);
+      }
+          
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
     }
@@ -99,10 +118,6 @@ const DatePicker = () => {
     };
   }, []);
 
-  //console.log("AHORA", hotelsShow.length);
-  //console.log("ACA VER",hotelAvailability.length);
-  //console.log("ACA MIRA", Object.values(hotelAvailability));
-
   return (
     <div className="dateDiv">
       <section className="datePicker">
@@ -126,6 +141,7 @@ const DatePicker = () => {
               <Card
                 key={hotel.id}
                 name={hotel.name}
+                hotelId={hotel.id}
                 onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
               />
             ))

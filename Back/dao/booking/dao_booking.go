@@ -2,9 +2,6 @@ package dao
 
 import (
 	"booking-api/model"
-
-	"time"
-
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
@@ -40,12 +37,12 @@ func InsertBooking(booking model.Booking) model.Booking {
 }
 
 // metodo que me cuenta la cantidad reservas que hay de ese hotel en una fecha
-func GetBookingByHotelAndDates(Id int, DateFrom time.Time, DateTo time.Time) int {
-	var count int
-
-	Db.Model(&model.Booking{}).Where("id = ? AND ? < date_to AND ? >= date_from", Id, DateFrom, DateTo).Preload("Hotel").Preload("User").Count(&count)
-
-	return count
+func GetBookingsByHotelId(Id int) ([]model.Booking, error) {
+	var bookings []model.Booking
+	if err := Db.Model(&model.Booking{}).Where("hotel_id = ?", Id).Find(&bookings).Error; err != nil {
+		return nil, err
+	}
+	return bookings, nil
 }
 
 func GetBookingsByUserId(userId int) model.Bookings {
