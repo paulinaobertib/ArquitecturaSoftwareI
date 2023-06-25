@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import PropTypes from "prop-types";
 import { BASE_URL } from "../configs";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const AuthContext = createContext();
 
@@ -41,17 +42,26 @@ const AuthContextProvider = ({ children }) => {
 
   const handleLogin = async (userName, password) => {
     const response = await fetch(`${BASE_URL}/user/user_name/${userName}`);
-    const data = await response.json();
-
-    if (data.user_name === userName && data.password === password) {
-      setUser(data);
-      return true;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.user_name === userName && data.password === password) {
+        setUser(data);
+        return { success: true, user: data };
+      }
     }
-    return false;
+    return { success: false };
   };
-
+  
   const logOut = () => {
     setUser(undefined);
+    localStorage.removeItem("token");
+    Swal.fire({
+      text: `Se ha cerrado sesión`,
+      icon: "success",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+    })
     navigate("/Home");
   };
 

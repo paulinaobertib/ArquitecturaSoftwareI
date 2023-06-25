@@ -24,31 +24,38 @@ export function Login() {
       });
       return;
     }
-
+  
     try {
-      const response = await handleLogin(userName, password);
-      const { token, user } = response;
-
-      // Guardar el token en el almacenamiento local
-      localStorage.setItem("token", token);
-
-      await waait();
-      Swal.fire({
-        text: `Bienvenido ${userName}`,
-        icon: "success",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-      }).then(() => {
-        navigate("/");
-      });
+      const { success, user } = await handleLogin(userName, password);
+  
+      if (success) {
+        // Guardar el token en el almacenamiento local
+        localStorage.setItem("token", user.token);
+  
+        await waait();
+        Swal.fire({
+          text: `Bienvenido ${userName}`,
+          icon: "success",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        }).then(() => {
+          navigate("/");
+        });
+      } else {
+        Swal.fire({
+          text: "Usuario o contraseña incorrectos",
+          icon: "warning",
+        });
+      }
     } catch (error) {
       Swal.fire({
-        text: "Usuario o contraseña incorrectos",
-        icon: "warning",
+        text: "Ocurrió un error al intentar iniciar sesión",
+        icon: "error",
       });
     }
   };
+  
 
   // Este es el boton y lo dirige al registro
   const onRegisterClick = () => {
