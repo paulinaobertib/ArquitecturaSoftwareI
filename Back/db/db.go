@@ -24,10 +24,10 @@ func init() {
 	// PARA HACER LA CONEXION TENGO QUE PONER EL GO RUN Y SE ACTUALIZA EN EL MYSQL
 	// DB Connections Paramters
 	DBName := "bookingPSTV"
-	DBUser := "PSTV" //root
+	DBUser := "root" //PSTV
 	DBPass := "PSTVArquiSw"
 	// DBPass := os.Getenv("MVC_DB_PASS")
-	DBHost := "localhost" //dbmysql
+	DBHost := "dbmysql" //localhost
 	// ------------------------
 
 	db, err = gorm.Open("mysql", DBUser+":"+DBPass+"@tcp("+DBHost+":3306)/"+DBName+"?charset=utf8&parseTime=True")
