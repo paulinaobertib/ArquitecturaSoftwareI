@@ -7,6 +7,7 @@ import { waait } from "../Components/helper";
 
 export function Login() {
   const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState("");
   const { handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,9 +25,13 @@ export function Login() {
       return;
     }
 
-const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseña ingresada
+    try {
+      const response = await handleLogin(userName, password);
+      const { token, user } = response;
 
-    if (isLoggedIn) {
+      // Guardar el token en el almacenamiento local
+      localStorage.setItem("token", token);
+
       await waait();
       Swal.fire({
         text: `Bienvenido ${userName}`,
@@ -36,9 +41,10 @@ const isLoggedIn = await handleLogin(userName, password); // Pasar la contraseñ
         },
       }).then(() => {
         navigate("/");
-      })} else {
+      });
+    } catch (error) {
       Swal.fire({
-        text: `Usuario o Contraseña incorrecta`,
+        text: "Usuario o contraseña incorrectos",
         icon: "warning",
       });
     }
