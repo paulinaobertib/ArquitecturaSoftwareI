@@ -44,8 +44,10 @@ const AuthContextProvider = ({ children }) => {
     const response = await fetch(`${BASE_URL}/user/user_name/${userName}`);
     if (response.ok) {
       const data = await response.json();
-      if (data.user_name === userName && data.password === password) {
-        setUser(data);
+      console.log(data);
+      if (data.user.user_name === userName && data.user.password === password) {
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
         return { success: true, user: data };
       }
     }

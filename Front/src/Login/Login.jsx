@@ -29,9 +29,6 @@ export function Login() {
       const { success, user } = await handleLogin(userName, password);
   
       if (success) {
-        // Guardar el token en el almacenamiento local
-        localStorage.setItem("token", user.token);
-  
         await waait();
         Swal.fire({
           text: `Bienvenido ${userName}`,

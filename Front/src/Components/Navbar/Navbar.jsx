@@ -14,8 +14,8 @@ const Navbar = () => {
 
 
   const handleLogout = async () => {
-    if (user) {
-      await logOut(user);
+    if (localStorage.getItem('token') != undefined) {
+      await logOut();
     }
   };
 

@@ -40,7 +40,23 @@ func GetUserByUsername(c *gin.Context) {
 		c.JSON(err.Status(), err)
 		return
 	}
-	c.JSON(http.StatusOK, userDto)
+
+	token := generateToken(userDto)
+    if err != nil {
+        log.Error(err.Error())
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+        return
+    }
+
+    response := struct {
+        Token string      `json:"token"`
+        User  dto.UserDto `json:"user"`
+    }{
+        Token: token,
+        User:  userDto,
+    }
+
+	c.JSON(http.StatusOK, response)
 }
 
 func GetUserByEmail(c *gin.Context) {
@@ -107,7 +123,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	token, err := generateToken(loginDto)
+	token:= generateToken(loginDto)
 	if err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, "fallo al generar el token")
@@ -125,7 +141,7 @@ func UserLogin(c *gin.Context) {
 	c.JSON(http.StatusAccepted, response)
 }
 
-func generateToken(loginDto dto.UserDto) (string, error) {
+func generateToken(loginDto dto.UserDto) (string) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = loginDto.Id
@@ -134,8 +150,8 @@ func generateToken(loginDto dto.UserDto) (string, error) {
 
 	tokenString, err := token.SignedString([]byte("your-secret-key"))
 	if err != nil {
-		return "", err
+		return ""
 	}
 
-	return tokenString, nil
+	return tokenString
 }
