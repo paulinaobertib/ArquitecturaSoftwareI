@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  dbmysql:
+    build: ./Db
+    environment:
+      MYSQL_DATABASE: bookingPSTV
+      MYSQL_ROOT_PASSWORD: PSTVArquiSw
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      timeout: 20s
+      retries: 10
+  frontend:
+    build: ./Front
+    depends_on:
+      dbmysql:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+  backend:
+    build: ./Back
+    depends_on:
+      dbmysql:
+        condition: service_healthy
+    ports:
+      - "8090:8090"
