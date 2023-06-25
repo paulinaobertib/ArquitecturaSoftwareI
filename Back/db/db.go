@@ -4,8 +4,8 @@ import (
 	amenitieDAO "booking-api/dao/amenitie"
 	bookingDAO "booking-api/dao/booking"
 	hotelDAO "booking-api/dao/hotel"
-	userDAO "booking-api/dao/user"
 	imageDAO "booking-api/dao/image"
+	userDAO "booking-api/dao/user"
 
 	"booking-api/model"
 
@@ -24,10 +24,10 @@ func init() {
 	// PARA HACER LA CONEXION TENGO QUE PONER EL GO RUN Y SE ACTUALIZA EN EL MYSQL
 	// DB Connections Paramters
 	DBName := "bookingPSTV"
-	DBUser := "PSTV"
+	DBUser := "PSTV" //root
 	DBPass := "PSTVArquiSw"
 	// DBPass := os.Getenv("MVC_DB_PASS")
-	DBHost := "localhost"
+	DBHost := "localhost" //dbmysql
 	// ------------------------
 
 	db, err = gorm.Open("mysql", DBUser+":"+DBPass+"@tcp("+DBHost+":3306)/"+DBName+"?charset=utf8&parseTime=True")

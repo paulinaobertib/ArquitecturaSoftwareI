@@ -28,8 +28,14 @@ const Product = () => {
   const monthEnd = endDateBooking.getMonth() + 1;
   const dayEnd = endDateBooking.getDate();
 
-  const formattedDateStart = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-  const formattedDateEnd = `${yearEnd}/${String(monthEnd).padStart(2, '0')}/${String(dayEnd).padStart(2, '0')}`;
+  const formattedDateStart = `${year}/${String(month).padStart(
+    2,
+    "0"
+  )}/${String(day).padStart(2, "0")}`;
+  const formattedDateEnd = `${yearEnd}/${String(monthEnd).padStart(
+    2,
+    "0"
+  )}/${String(dayEnd).padStart(2, "0")}`;
 
   const getHotel = async () => {
     const response = await fetch(infoHotel);
@@ -53,12 +59,12 @@ const Product = () => {
       const data = await response.json();
       setImages(data.images);
     } catch (error) {
-      console.error('Error al obtener las imágenes del hotel:', error);
+      console.error("Error al obtener las imágenes del hotel:", error);
       Swal.fire({
-        text: 'Error al obtener las imágenes del hotel',
-        icon: 'error',
+        text: "Error al obtener las imágenes del hotel",
+        icon: "error",
         showClass: {
-          popup: 'animate__animated animate__fadeInDown',
+          popup: "animate__animated animate__fadeInDown",
         },
       });
     }
@@ -68,10 +74,10 @@ const Product = () => {
     getHotel();
     if (user && (!startDate || !endDate)) {
       Swal.fire({
-        text: 'Seleccione las fechas en la home',
-        icon: 'warning',
+        text: "Seleccione las fechas en la home",
+        icon: "warning",
         showClass: {
-          popup: 'animate__animated animate__fadeInDown',
+          popup: "animate__animated animate__fadeInDown",
         },
       });
     }
@@ -89,7 +95,7 @@ const Product = () => {
       date_to: formattedDateEnd,
       hotel_id: hotel.id,
     };
-  
+
     try {
       const createBookingResponse = await fetch(`${BASE_URL}/booking`, {
         method: "POST",
@@ -98,7 +104,7 @@ const Product = () => {
         },
         body: JSON.stringify(newBooking),
       });
-  
+
       if (!createBookingResponse.ok) {
         Swal.fire({
           text: "Registro del booking no se ha podido realizar",
@@ -109,7 +115,7 @@ const Product = () => {
         });
         throw new Error("Error al registrar el booking");
       }
-  
+
       Swal.fire({
         text: "Registro del booking exitoso",
         icon: "success",
@@ -117,7 +123,7 @@ const Product = () => {
           popup: "animate__animated animate__fadeInDown",
         },
       });
-  
+
       const createdBooking = await createBookingResponse.json();
       console.log(createdBooking);
     } catch (error) {
@@ -143,29 +149,35 @@ const Product = () => {
     <div className="detailsHotel">
       <h1>Detalles del hotel seleccionado: </h1>
       <div className="detailEach">
-          {images.length > 0 ? (
-            <div className='arrows'>
-              {showArrows && (
-                <button
-                  className={`prev-arrow ${activeIndex === 0 ? 'hidden' : ''}`}
-                  onClick={() => handleSlideChange(-1)}
-                >
-                  &lt;
-                </button>
-              )}
-              <img src={`${BASE_URL}/${images[activeIndex]?.url}`} alt="Imagen del producto" className="hotelImage"/>
-              {showArrows && (
-                <button
-                  className={`next-arrow ${activeIndex === images.length - 1 ? 'hidden' : ''}`}
-                  onClick={() => handleSlideChange(1)}
-                >
-                  &gt;
-                </button>
-              )}
-            </div>
-          ) : (
-            <p>No se encontraron imágenes para este producto.</p>
-          )}
+        {images.length > 0 ? (
+          <div className="arrows">
+            {showArrows && (
+              <button
+                className={`prev-arrow ${activeIndex === 0 ? "hidden" : ""}`}
+                onClick={() => handleSlideChange(-1)}
+              >
+                &lt;
+              </button>
+            )}
+            <img
+              src={`${BASE_URL}/${images[activeIndex]?.url}`}
+              alt="Imagen del producto"
+              className="hotelImage"
+            />
+            {showArrows && (
+              <button
+                className={`next-arrow ${
+                  activeIndex === images.length - 1 ? "hidden" : ""
+                }`}
+                onClick={() => handleSlideChange(1)}
+              >
+                &gt;
+              </button>
+            )}
+          </div>
+        ) : (
+          <p>No se encontraron imágenes para este producto.</p>
+        )}
         <div className="details">
           <h3>{hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
@@ -173,15 +185,18 @@ const Product = () => {
           <p>Email: {hotel?.email}</p>
           <p>Habitaciones disponibles: {hotel?.rooms}</p>
           <p className="description">{hotel?.description}</p>
-          {user && startDate && endDate && (hotel?.rooms > 0) (
-            <button className="bookingButton" onClick={createBooking}>
-              Reservar
-            </button>
-          )}
+          {user &&
+            startDateBooking &&
+            endDateBooking &&
+            hotel?.rooms > 0 && ( // Update the parentheses
+              <button className="bookingButton" onClick={createBooking}>
+                Reservar
+              </button>
+            )}
         </div>
       </div>
       <h4>Amenities</h4>
-      <div className="Amenities"> 
+      <div className="Amenities">
         {amenities?.length ? (
           amenities.map((amenitie) => (
             <React.Fragment key={amenitie.id}>
