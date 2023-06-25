@@ -160,7 +160,7 @@ func (u *userService) InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError) 
 
 func (u *userService) UserLogin(loginDto dto.UserDto) (dto.UserDto, e.ApiError) {
 
-	var user model.User
+	var user = userDAO.GetUserByEmail(loginDto.Email)
 
 	if user.Id == 0 {
 		return loginDto, e.NewBadRequestApiError("Usuario no registrado")
