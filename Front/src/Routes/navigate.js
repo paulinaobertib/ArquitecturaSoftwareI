@@ -4,7 +4,7 @@ import { Register } from "../Register/Register"
 // import { Perfil } from "./../Perfil/Perfil"
 
 const Home = lazy(() => import("../Home/Home"));
-const Product = lazy(() => import("../Product/product"));
+const Product = lazy(() => import("../Product/Product"));
 const Booking = lazy(() => import("../Booking/Booking"));
 const Perfil = lazy(() => import("../Perfil/Perfil"));
 const AdminUser = lazy(() => import("../AdminUser/AdminUser"));
