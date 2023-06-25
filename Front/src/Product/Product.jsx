@@ -91,7 +91,7 @@ const Product = () => {
     };
   
     try {
-      const createBookingResponse = await fetch(BOOKING_URL, {
+      const createBookingResponse = await fetch(`${BASE_URL}/booking`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +173,7 @@ const Product = () => {
           <p>Email: {hotel?.email}</p>
           <p>Habitaciones disponibles: {hotel?.rooms}</p>
           <p className="description">{hotel?.description}</p>
-          {user && startDate && endDate && (
+          {user && startDate && endDate && (hotel?.rooms > 0) (
             <button className="bookingButton" onClick={createBooking}>
               Reservar
             </button>
@@ -181,7 +181,7 @@ const Product = () => {
         </div>
       </div>
       <h4>Amenities</h4>
-      <div className="Amenities">
+      <div className="Amenities"> 
         {amenities?.length ? (
           amenities.map((amenitie) => (
             <React.Fragment key={amenitie.id}>

@@ -64,13 +64,21 @@ const DatePicker = () => {
           if (availabilityData != null) {
             const startDateComp = new Date(startDate);
             const endDateComp = new Date(endDate);
-
             let isAvailable = true;
             for (const date of availabilityData) {
+              let countdata = 0;
               const unavailableDate = new Date(date);
               if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
-                isAvailable = false;
-                break;
+                for (const dateNo of availabilityData) {
+                  const unavailableDate = new Date(dateNo);
+                  if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
+                    countdata++;
+                  }
+                  if (countdata-1 > hotelA.rooms) {
+                    isAvailable = false;
+                    break;
+                  }
+                }
               }
             }
 
