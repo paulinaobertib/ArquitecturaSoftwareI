@@ -6,11 +6,18 @@ import { useNavigate } from "react-router-dom";
 import Hotels from "./Hotels";
 import Swal from "sweetalert2";
 
+const formatDate = (date) => {
+  const day = date.toLocaleString("default", { day: "2-digit" });
+  const month = date.toLocaleString("default", { month: "2-digit" });
+  const year = date.toLocaleString("default", { year: "numeric" });
+  return `${year}-${month}-${day}`;
+};
+
 const DatePicker = () => {
   const navigate = useNavigate();
-  const [hotels, setHotels] = useState([]);
+  // const [hotels, setHotels] = useState([]);
   const [hotelsShow, setHotelsShow] = useState([]);
-  const [hotelAvailability, setHotelAvailability] = useState({});
+  // const [hotelAvailability, setHotelAvailability] = useState({});
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -44,7 +51,7 @@ const DatePicker = () => {
 
       const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
       const hotelsData = await hotelsResponse.json();
-      setHotels(hotelsData);
+      // setHotels(hotelsData);
       console.log(hotelsData);
 
       const filteredHotels = [];
@@ -55,43 +62,46 @@ const DatePicker = () => {
         for (const hotelA of hotel) {
           const hotelID = hotelA.id;
           const availabilityResponse = await fetch(
-            `${BASE_URL}/booking/no-availability/${hotelID}`
+            `${BASE_URL}/booking/no-availability/${hotelID}/${formatDate(
+              startDate
+            )}/${formatDate(endDate)}`
           );
-          const availabilityData = await availabilityResponse.json();
+          const isAvailable = await availabilityResponse.json();
 
-          console.log("ACA", availabilityData);
-
-          if (availabilityData != null) {
-            const startDateComp = new Date(startDate);
-            const endDateComp = new Date(endDate);
-            let isAvailable = true;
-            for (const date of availabilityData) {
-              let countdata = 0;
-              const unavailableDate = new Date(date);
-              if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
-                for (const dateNo of availabilityData) {
-                  const unavailableDate = new Date(dateNo);
-                  if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
-                    countdata++;
-                  }
-                  if (countdata-1 > hotelA.rooms) {
-                    isAvailable = false;
-                    break;
-                  }
-                }
-              }
-            }
-
-            if (isAvailable) {
-              filteredHotels.push(hotelA);
-            }
-          } else {
+          if (isAvailable) {
             filteredHotels.push(hotelA);
           }
+
+          // if (availabilityData != null) {
+          //   const startDateComp = new Date(startDate);
+          //   const endDateComp = new Date(endDate);
+          //   let isAvailable = true;
+          //   for (const date of availabilityData) {
+          //     let countdata = 0;
+          //     const unavailableDate = new Date(date);
+          //     if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
+          //       for (const dateNo of availabilityData) {
+          //         const unavailableDate = new Date(dateNo);
+          //         if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
+          //           countdata++;
+          //         }
+          //         if (countdata-1 > hotelA.rooms) {
+          //           isAvailable = false;
+          //           break;
+          //         }
+          //       }
+          //     }
+          //   }
+
+          //   if (isAvailable) {
+          //     filteredHotels.push(hotelA);
+          //   }
+          // } else {
+          //   filteredHotels.push(hotelA);
+          // }
+        }
+        setHotelsShow(filteredHotels);
       }
-      setHotelsShow(filteredHotels);
-      }
-          
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
     }
@@ -150,7 +160,9 @@ const DatePicker = () => {
                 key={hotel.id}
                 name={hotel.name}
                 hotelId={hotel.id}
-                onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
+                onClick={() =>
+                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)
+                }
               />
             ))
           ) : (

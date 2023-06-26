@@ -2,6 +2,7 @@ package service
 
 import (
 	bookingDAO "booking-api/dao/booking"
+	hotelDAO "booking-api/dao/hotel"
 	"booking-api/dto"
 	"booking-api/model"
 	e "booking-api/utils/errors"
@@ -14,8 +15,9 @@ type bookingServiceInterface interface {
 	GetBookingById(id int) (dto.BookingDto, e.ApiError)
 	GetBookings() (dto.BookingsDto, e.ApiError)
 	InsertBooking(bookingDto dto.BookingDto) (dto.BookingDto, e.ApiError)
-	GetUnavailableDatesByHotel(Id int) ([]time.Time, error)
+	// GetUnavailableDatesByHotel(Id int) ([]time.Time, error)
 	GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError)
+	CheckAvailability(hotelId int, startDate time.Time, endDate time.Time) bool
 }
 
 var (
@@ -83,26 +85,49 @@ func (b *bookingService) InsertBooking(bookingDto dto.BookingDto) (dto.BookingDt
 	return bookingDto, nil
 }
 
-func (b *bookingService) GetUnavailableDatesByHotel(Id int) ([]time.Time, error) {
-	var unavailableDates []time.Time
+// func (b *bookingService) GetUnavailableDatesByHotel(Id int) ([]time.Time, error) {
+// 	var unavailableDates []time.Time
 
-	bookings, err := bookingDAO.GetBookingsByHotelId(Id)
-	if err != nil {
-		return nil, err
+// 	bookings, err := bookingDAO.GetBookingsByHotelId(Id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	for _, booking := range bookings {
+// 		startDate := booking.DateFrom
+// 		endDate := booking.DateTo
+
+// 		for date := startDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
+// 			unavailableDates = append(unavailableDates, date)
+// 		}
+// 	}
+
+// 	return unavailableDates, nil
+// }
+
+func (b *bookingService) CheckAvailability(hotelId int, startDate time.Time, endDate time.Time) bool {
+
+	hotel := hotelDAO.GetHotelById(hotelId)
+	bookings, _ := bookingDAO.GetBookingsByHotelId(hotelId)
+	roomsAvailable := hotel.Rooms
+	if hotel.Rooms == 0 {
+		return false
 	}
-
 	for _, booking := range bookings {
-		startDate := booking.DateFrom
-		endDate := booking.DateTo
-
-		for date := startDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
-			unavailableDates = append(unavailableDates, date)
+		if booking.DateFrom.After(startDate) && booking.DateTo.Before(endDate) ||
+			booking.DateFrom.Before(startDate) && booking.DateTo.After(startDate) ||
+			booking.DateFrom.Before(endDate) && booking.DateTo.After(endDate) ||
+			booking.DateFrom.Before(startDate) && booking.DateTo.After(endDate) ||
+			booking.DateFrom.Equal(startDate) || booking.DateTo.Equal(endDate) {
+			roomsAvailable--
+		}
+		if roomsAvailable == 0 {
+			return false
 		}
 	}
 
-	return unavailableDates, nil
+	return true
 }
-
 
 func (b *bookingService) GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError) {
 

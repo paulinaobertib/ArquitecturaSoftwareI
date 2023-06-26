@@ -71,16 +71,20 @@ func InsertBooking(c *gin.Context) {
 	}
 
 	// Verificar que haya habitaciones disponibles
-	unavailable_dates, _ := service.BookingService.GetUnavailableDatesByHotel(bookingDto.HotelId)
+	isAvailable := service.BookingService.CheckAvailability(bookingDto.HotelId, dateFrom, dateTo)
 
-	initialDate, _ := time.Parse(layout, bookingDto.DateFrom)
-	finalDate, _ := time.Parse(layout, bookingDto.DateTo)
+	// initialDate, _ := time.Parse(layout, bookingDto.DateFrom)
+	// finalDate, _ := time.Parse(layout, bookingDto.DateTo)
+	// for _, date := range unavailable_dates {
+	// 	if initialDate.Before(date) || finalDate.After(date) || initialDate.Equal(date) || finalDate.Equal(date) {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "No hay habitaciones disponibles en las fechas seleccionadas."})
+	// 		return
+	// 	}
+	// }
 
-	for _, date := range unavailable_dates {
-		if (initialDate.Before(date) || finalDate.After(date) || initialDate.Equal(date) || finalDate.Equal(date)) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No hay habitaciones disponibles en las fechas seleccionadas."})
-			return
-		}
+	if !isAvailable {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No hay habitaciones disponibles en las fechas seleccionadas."})
+		return
 	}
 
 	// Si no se encontraron coincidencias, hay habitaciones disponibles
@@ -95,22 +99,27 @@ func InsertBooking(c *gin.Context) {
 	c.JSON(http.StatusCreated, bookingDto) // estos son los mensajes que se muestran, en este caso seria el creado, 201
 }
 
-func GetUnavailableDates(c *gin.Context) {
+func GetAvailability(c *gin.Context) {
 	hotelID, err := strconv.Atoi(c.Param("id"))
+	startDate := c.Param("startDate")
+	endDate := c.Param("endDate")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid hotel ID"})
 		return
 	}
 
-	unavailableDates, err := service.BookingService.GetUnavailableDatesByHotel(hotelID)
+	dateFrom, _ := time.Parse("2006-01-02", startDate)
+	dateTo, _ := time.Parse("2006-01-02", endDate)
+	log.Debug(startDate, dateFrom)
+
+	isAvailable := service.BookingService.CheckAvailability(hotelID, dateFrom, dateTo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve unavailable dates"})
 		return
 	}
 
-	c.JSON(http.StatusOK, unavailableDates)
+	c.JSON(http.StatusOK, isAvailable)
 }
-
 
 func GetBookingsByUserId(c *gin.Context) {
 	log.Debug("User id to load: " + c.Param("id"))
