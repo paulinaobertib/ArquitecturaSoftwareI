@@ -107,7 +107,7 @@ const AdminUser = () => {
         return response.json();
       })
       .then((data) => {
-        console.log('Amenidad agregada:', data);
+        console.log('Amenitie agregada:', data);
         Swal.fire({
           text: 'Amenitie registrada con éxito',
           icon: 'success',
@@ -121,7 +121,7 @@ const AdminUser = () => {
         });
       })
       .catch((error) => {
-        console.error('Error al agregar la amenidad:', error);
+        console.error('Error al agregar la amenitie:', error);
         Swal.fire({
           text: 'La amenitie no se ha podido registrar',
           icon: 'error',
