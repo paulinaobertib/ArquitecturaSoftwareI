@@ -21,7 +21,9 @@ function App() {
                 <>
                   <Navbar />
                   <React.Suspense fallback={<LoadingIndicator />}>
-                    <Element />
+                    <div style={{ minHeight: "calc(100vh - 164px - 2rem)" }}>
+                      <Element />
+                    </div>
                   </React.Suspense>
                   <Footer />
                 </>
@@ -34,6 +36,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 
 export default App;
