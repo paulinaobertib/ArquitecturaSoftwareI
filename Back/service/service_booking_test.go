@@ -48,6 +48,11 @@ func (t *TestBookings) GetBookingsByUserId(id int) (dto.BookingsDto, e.ApiError)
 	return dto.BookingsDto{}, nil
 }
 
+// Si cambio esta funcion a false, puedo ver el error
+func (t *TestBookings) CheckAvailability(hotelID int, dateFrom, dateTo time.Time) bool {
+	return true
+}
+
 func TestInsertBooking(t *testing.T) {
 	// Si cambio el valor de los id puedo ver los errores
 	booking := dto.BookingDto{
@@ -59,14 +64,31 @@ func TestInsertBooking(t *testing.T) {
 
 	service.BookingService = &TestBookings{}
 
-	createdBooking, err := service.BookingService.InsertBooking(booking)
+	dateFrom, err := time.Parse("2006/01/02", booking.DateFrom)
+	if err != nil {
+		t.Errorf("Error al analizar la fecha de inicio: %v", err)
+		return
+	}
 
-	assert.Nil(t, err, "Error al insertar la reserva")
-	assert.Equal(t, 1, createdBooking.UserId, "El ID de usuario no coincide")
-	assert.Equal(t, 2, createdBooking.HotelId, "El ID de hotel no coincide")
-	assert.Equal(t, booking.DateFrom, createdBooking.DateFrom, "La fecha de inicio no coincide")
-	assert.Equal(t, booking.DateTo, createdBooking.DateTo, "La fecha de fin no coincide")
+	dateTo, err := time.Parse("2006/01/02", booking.DateTo)
+	if err != nil {
+		t.Errorf("Error al analizar la fecha de fin: %v", err)
+		return
+	}
 
+	availability := service.BookingService.CheckAvailability(booking.HotelId, dateFrom, dateTo)
+
+	if !availability {
+		assert.Fail(t, "No se puede realizar la reserva debido a la falta de disponibilidad")
+	} else {
+		createdBooking, err := service.BookingService.InsertBooking(booking)
+
+		assert.Nil(t, err, "Error al insertar la reserva")
+		assert.Equal(t, 1, createdBooking.UserId, "El ID de usuario no coincide")
+		assert.Equal(t, 2, createdBooking.HotelId, "El ID de hotel no coincide")
+		assert.Equal(t, booking.DateFrom, createdBooking.DateFrom, "La fecha de inicio no coincide")
+		assert.Equal(t, booking.DateTo, createdBooking.DateTo, "La fecha de fin no coincide")
+	}
 }
 
 func TestGetBookingById(t *testing.T) {

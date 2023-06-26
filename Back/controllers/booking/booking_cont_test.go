@@ -58,6 +58,11 @@ func (t *TestBookings) GetUnavailableDatesByHotel(hotelID int) ([]time.Time, err
 	return []time.Time{}, nil
 }
 
+// Si cambio esta funcion a false, puedo ver el error
+func (t *TestBookings) CheckAvailability(hotelID int, dateFrom, dateTo time.Time) bool {
+	return true
+}
+
 func TestInsertBooking(t *testing.T) {
 	service.BookingService = &TestBookings{}
 	router := gin.Default()
@@ -70,19 +75,25 @@ func TestInsertBooking(t *testing.T) {
 		"date_from": "2023/05/30",
 		"date_to": "2023/06/05",
 		"user_id": 1
-	}`
-
-	bodyJson := strings.NewReader(myJson)
-	request, _ := http.NewRequest("POST", "/booking", bodyJson)
+		}`
 
 	response := httptest.NewRecorder()
 
-	router.ServeHTTP(response, request)
+	availability := service.BookingService.CheckAvailability(2, time.Date(2023, 5, 30, 0, 0, 0, 0, time.UTC), time.Date(2023, 6, 5, 0, 0, 0, 0, time.UTC))
+	if !availability {
+		assert.Equal(t, http.StatusBadRequest, response.Code, "No se pudo lograr la disponibilidad para las fechas especificadas")
+	} else {
 
-	fmt.Println(response.Body.String())
+		bodyJson := strings.NewReader(myJson)
+		request, _ := http.NewRequest("POST", "/booking", bodyJson)
 
-	// Verificar el código de estado de la respuesta
-	assert.Equal(t, http.StatusCreated, response.Code, "El código de respuesta no es el esperado")
+		router.ServeHTTP(response, request)
+
+		fmt.Println(response.Body.String())
+
+		// Verificar el código de estado de la respuesta
+		assert.Equal(t, http.StatusCreated, response.Code, "El código de respuesta no es el esperado")
+	}
 }
 
 func TestGetBookingById(t *testing.T) {
