@@ -38,6 +38,7 @@ const Navbar = () => {
         <Link to="/home">Home</Link>
         {!user && <Link to="/login">Iniciar Sesion</Link>}
         {!user && <Link to="/register">Registrarse</Link>}
+        {user && <Link to="/perfil">Perfil</Link>}
         {user && <Link to="/admin">Modo Administrador</Link>}
       </nav>
     );
