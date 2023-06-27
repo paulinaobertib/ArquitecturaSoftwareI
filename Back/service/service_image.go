@@ -76,7 +76,7 @@ func (i *imageService) ImageInsert(hotelID int, imageFile *multipart.FileHeader)
 	fileExt := filepath.Ext(imageFile.Filename)
 
 	// Construir la ruta completa del archivo
-	filePath := "ImagenesHoteles" + "/" + fileName + fileExt
+	filePath := "imagenesHoteles" + "/" + fileName + fileExt
 
 	// Crear una nueva instancia de model.Image
 	image := model.Image{

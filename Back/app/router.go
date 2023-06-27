@@ -14,7 +14,7 @@ func init() {
 	router = gin.Default()
 	router.Use(cors.Default())
 	// Ruta para servir archivos estáticos desde "imagenesHoteles"
-	router.Static("/ImagenesHoteles", "./ImagenesHoteles")
+	router.Static("/imagenesHoteles", "./imagenesHoteles")
 }
 
 func StartRoute() {
